@@ -140,6 +140,19 @@ const Store = {
     this.set(this.KEYS.rank, id);
   },
 
+  /* ---- daily routine flow (per-day checkable steps) ---- */
+  getDayFlow() {
+    const all = this.get("va_dayflow", {});
+    return all[this.todayKey()] || {};
+  },
+  setDayFlowItem(key, value) {
+    const all = this.get("va_dayflow", {});
+    const today = this.todayKey();
+    if (!all[today]) all[today] = {};
+    if (value) all[today][key] = true; else delete all[today][key];
+    this.set("va_dayflow", all);
+  },
+
   /* ---- pathway stage ---- */
   getStage() {
     return this.get(this.KEYS.stage, "s2");

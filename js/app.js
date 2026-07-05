@@ -408,6 +408,13 @@
     const prettyDate = new Date().toLocaleDateString(undefined, {
       weekday: "long", month: "short", day: "numeric"
     });
+    const flow = Store.getDayFlow();
+    const flowCheck = (k, text) => `
+      <label class="check flow-item ${flow[k] ? "done" : ""}">
+        <input type="checkbox" data-flow="${k}" ${flow[k] ? "checked" : ""}>
+        <span class="check-box"><i class="ti ti-check"></i></span>
+        <span class="check-text">${text}</span>
+      </label>`;
 
     el.innerHTML = `
       <header class="page-head">
@@ -415,59 +422,91 @@
           <p class="eyebrow">${prettyDate}</p>
           <h1 class="page-title">Daily Routine</h1>
         </div>
-        <span class="streak-chip"><i class="ti ti-flame"></i> ${Store.goalStreak()} day streak</span>
+        <div class="daily-chips">
+          <span class="streak-chip flow-progress" id="flow-progress"><i class="ti ti-list-check"></i> 0/5 steps</span>
+          <span class="streak-chip"><i class="ti ti-flame"></i> ${Store.goalStreak()} day streak</span>
+        </div>
       </header>
 
-      <div class="daily-grid">
-        <section class="card">
-          <h2 class="card-h"><i class="ti ti-bookmark"></i> 1. Today's ONE focus goal</h2>
-          <p class="muted">Pick one. Just one. This is what you judge the session on — not RR.</p>
-          <input class="input" id="focus-input" list="focus-list" placeholder="Type or pick a focus goal"
-            value="${escapeAttr(day.focus)}">
-          <datalist id="focus-list">
-            ${goals.map((g) => `<option value="${escapeAttr(g)}">`).join("")}
-            <option value="${escapeAttr(weekHabit)}">
-          </datalist>
-          <div class="chips">
-            ${goals.slice(0, 6).map((g) => `<button class="chip" data-action="pick-goal" data-goal="${escapeAttr(g)}">${g}</button>`).join("")}
-          </div>
-        </section>
+      <p class="muted lead">Walk it top to bottom, every day. A step lights up when it's done.</p>
 
-        <section class="card">
-          <h2 class="card-h"><i class="ti ti-device-gamepad-2"></i> 2. Games & first bloods</h2>
-          <div class="counter-row">
-            <span class="counter-label">Games played</span>
-            <div class="counter">
-              <button class="counter-btn" data-action="games-dec"><i class="ti ti-minus"></i></button>
-              <span class="counter-val" id="games-val">${day.games || 0}</span>
-              <button class="counter-btn" data-action="games-inc"><i class="ti ti-plus"></i></button>
+      <div class="flow">
+
+        <div class="flow-step" data-step="1">
+          <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">1</span></span></div>
+          <section class="card fs-card">
+            <h2 class="card-h"><i class="ti ti-flame"></i> Warm up — never queue cold</h2>
+            ${flowCheck("w_drills", "15 min drills: head-taps + counter-strafe reps (Range or Aim Labs)")}
+            ${flowCheck("w_dm", "One deathmatch — crosshair placement only, ignore the score")}
+          </section>
+        </div>
+
+        <div class="flow-step" data-step="2">
+          <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">2</span></span></div>
+          <section class="card fs-card">
+            <h2 class="card-h"><i class="ti ti-bookmark"></i> Set today's ONE focus goal</h2>
+            <input class="input" id="focus-input" list="focus-list" placeholder="Type or pick a focus goal"
+              value="${escapeAttr(day.focus)}">
+            <datalist id="focus-list">
+              ${goals.map((g) => `<option value="${escapeAttr(g)}">`).join("")}
+              <option value="${escapeAttr(weekHabit)}">
+            </datalist>
+            <div class="chips">
+              ${goals.slice(0, 6).map((g) => `<button class="chip" data-action="pick-goal" data-goal="${escapeAttr(g)}">${g}</button>`).join("")}
             </div>
-          </div>
-          <div class="counter-row">
-            <span class="counter-label">First bloods <i class="ti ti-swords" aria-hidden="true"></i></span>
-            <div class="counter">
-              <button class="counter-btn" data-action="fd-dec"><i class="ti ti-minus"></i></button>
-              <span class="counter-val fd" id="fd-val">${day.fd || 0}</span>
-              <button class="counter-btn" data-action="fd-inc"><i class="ti ti-plus"></i></button>
+          </section>
+        </div>
+
+        <div class="flow-step" data-step="3">
+          <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">3</span></span></div>
+          <section class="card fs-card">
+            <h2 class="card-h"><i class="ti ti-device-gamepad-2"></i> Play the block — 3-4 games max</h2>
+            <p class="muted">Log every result on the session bar above (+W / +L). Two losses in a row and the guard steps in.</p>
+            <div class="counter-row">
+              <span class="counter-label">Games played</span>
+              <div class="counter">
+                <button class="counter-btn" data-action="games-dec"><i class="ti ti-minus"></i></button>
+                <span class="counter-val" id="games-val">${day.games || 0}</span>
+                <button class="counter-btn" data-action="games-inc"><i class="ti ti-plus"></i></button>
+              </div>
             </div>
-          </div>
-          <p class="muted center">Your entry KPI: 2+ first bloods per game — counted, covered, never dry.</p>
-        </section>
+            <div class="counter-row">
+              <span class="counter-label">First bloods <i class="ti ti-swords" aria-hidden="true"></i></span>
+              <div class="counter">
+                <button class="counter-btn" data-action="fd-dec"><i class="ti ti-minus"></i></button>
+                <span class="counter-val fd" id="fd-val">${day.fd || 0}</span>
+                <button class="counter-btn" data-action="fd-inc"><i class="ti ti-plus"></i></button>
+              </div>
+            </div>
+            ${dailyPullBanner()}
+          </section>
+        </div>
 
-        <section class="card">
-          <h2 class="card-h"><i class="ti ti-target"></i> 3. Did you hit the focus goal?</h2>
-          <div class="toggle-row">
-            <button class="toggle ${day.hit ? "on" : ""}" id="hit-yes" data-action="hit" data-val="1"><i class="ti ti-check"></i> Yes, I executed it</button>
-            <button class="toggle ${day.hit === false && (Store.getDay(key)) ? "off" : ""}" id="hit-no" data-action="hit" data-val="0"><i class="ti ti-x"></i> Not today</button>
-          </div>
-          <p class="muted center">Goal hit = streak +1. Missing it is data, not failure — feed it into VOD review.</p>
-        </section>
-      </div>
+        <div class="flow-step" data-step="4">
+          <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">4</span></span></div>
+          <section class="card fs-card">
+            <h2 class="card-h"><i class="ti ti-device-tv"></i> Debrief — 5 honest minutes</h2>
+            <div class="toggle-row">
+              <button class="toggle ${day.hit ? "on" : ""}" id="hit-yes" data-action="hit" data-val="1"><i class="ti ti-check"></i> Focus goal: hit it</button>
+              <button class="toggle ${day.hit === false && (Store.getDay(key)) ? "off" : ""}" id="hit-no" data-action="hit" data-val="0"><i class="ti ti-x"></i> Not today</button>
+            </div>
+            ${flowCheck("d_review", "Reviewed 3 deaths with the 4 questions (Module 06)")}
+            <p class="muted">Missing the goal is data, not failure — the review is where it converts.</p>
+          </section>
+        </div>
 
-      ${dailyPullBanner()}
-      <div class="save-row">
-        <button class="btn btn-big" data-action="save-day"><i class="ti ti-device-floppy"></i> Save today's log</button>
-        <span class="save-status" id="save-status" role="status" aria-live="polite"></span>
+        <div class="flow-step" data-step="5">
+          <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">5</span></span></div>
+          <section class="card fs-card">
+            <h2 class="card-h"><i class="ti ti-device-floppy"></i> Close the day</h2>
+            <p class="muted">Save the log, bank the session on the bar above, and walk away on your own terms.</p>
+            <div class="save-row">
+              <button class="btn btn-big" data-action="save-day"><i class="ti ti-device-floppy"></i> Save today's log</button>
+              <span class="save-status" id="save-status" role="status" aria-live="polite"></span>
+            </div>
+          </section>
+        </div>
+
       </div>
 
       <section class="card">
@@ -492,6 +531,34 @@
         </div>
       </section>
     `;
+    updateFlowUI();
+  }
+
+  /* recompute the 5 routine steps' done-states in place (no re-render,
+     so typed input and counter values are never lost) */
+  function updateFlowUI() {
+    const view = $("#view-daily");
+    if (!view || !view.querySelector(".flow")) return;
+    const flow = Store.getDayFlow();
+    const focusVal = ($("#focus-input") ? $("#focus-input").value : "").trim();
+    const games = Number($("#games-val") ? $("#games-val").textContent : 0) || 0;
+    const saved = Store.getDay(Store.todayKey());
+    const hitChosen = view.dataset.hit !== undefined || !!saved;
+    const done = {
+      1: !!(flow.w_drills && flow.w_dm),
+      2: focusVal.length > 0,
+      3: games > 0,
+      4: hitChosen && !!flow.d_review,
+      5: !!saved
+    };
+    let count = 0;
+    view.querySelectorAll(".flow-step").forEach((s) => {
+      const ok = done[Number(s.dataset.step)];
+      s.classList.toggle("done", !!ok);
+      if (ok) count++;
+    });
+    const prog = $("#flow-progress");
+    if (prog) prog.innerHTML = `<i class="ti ti-list-check"></i> ${count}/5 steps`;
   }
 
   function todayFromAccount() {
@@ -961,7 +1028,19 @@
         const label = cb.closest(".check");
         if (label) label.classList.toggle("done", cb.checked);
         refreshProgressUI(cb.dataset.module);
+        return;
       }
+      const fc = e.target.closest('input[type="checkbox"][data-flow]');
+      if (fc) {
+        Store.setDayFlowItem(fc.dataset.flow, fc.checked);
+        const label = fc.closest(".check");
+        if (label) label.classList.toggle("done", fc.checked);
+        updateFlowUI();
+      }
+    });
+
+    document.addEventListener("input", (e) => {
+      if (e.target && e.target.id === "focus-input") updateFlowUI();
     });
 
     document.addEventListener("click", (e) => {
@@ -1057,6 +1136,7 @@
     if (!el) return;
     const next = Math.max(0, (Number(el.textContent) || 0) + delta);
     el.textContent = next;
+    updateFlowUI();
   }
 
   function setHit(val) {
@@ -1065,6 +1145,7 @@
     $("#hit-yes").dataset.pending = val ? "1" : "0";
     /* store pending hit on the button for save */
     $("#view-daily").dataset.hit = val ? "1" : "0";
+    updateFlowUI();
   }
 
   function saveDay() {
@@ -1083,8 +1164,9 @@
     /* refresh history + streak chip without losing inputs */
     const hist = $(".history");
     if (hist) hist.innerHTML = historyDots();
-    const chip = $(".streak-chip");
+    const chip = $$(".streak-chip").find((c) => c.id !== "flow-progress");
     if (chip) chip.innerHTML = '<i class="ti ti-flame"></i> ' + Store.goalStreak() + " day streak";
+    updateFlowUI();
   }
 
   function flashSave(msg, warn) {
