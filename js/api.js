@@ -10,30 +10,36 @@ const VAPI = (function () {
 
   const DIRECT_BASE = "https://api.henrikdev.xyz/valorant";
   const PROXY_BASE = "/api/henrik";
-  /* proxy-first: use the server's key when the backend has one, fall back
-     to a direct call with the browser-stored key otherwise */
+  /* proxy-first: use the server's key when a backend with a key exists.
+     Detection probes /auth/status (only OUR backend serves it as JSON with a
+     `proxy` flag) — so static hosts like GitHub Pages, whose 404s would
+     otherwise masquerade as API errors, cleanly route to direct mode. */
   let proxyMode = null; // null = unknown, true/false = decided
 
+  async function detectProxy() {
+    try {
+      const res = await fetch("/auth/status", { cache: "no-store" });
+      if (!res.ok) return false;
+      const s = await res.json();
+      return s && s.proxy === true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async function getJson(path, key) {
-    if (proxyMode !== false) {
-      try {
-        const res = await fetch(PROXY_BASE + "/" + path);
-        if (res.status === 501) {
-          proxyMode = false; /* server has no key — go direct below */
-        } else {
-          if (res.status === 401) throw new Error("Session expired — reload the page and log in.");
-          if (!res.ok) throw new Error(statusMsg(res.status));
-          proxyMode = true;
-          const body = await res.json();
-          return body.data !== undefined ? body.data : body;
-        }
-      } catch (e) {
-        if (proxyMode === true) throw e;      /* proxy works, real error */
-        if (e.message && /Session expired|HTTP|rejected|not found|Rate limited/.test(e.message)) throw e;
-        proxyMode = false;                     /* network-level: no backend */
+    if (proxyMode === null) proxyMode = await detectProxy();
+    if (proxyMode) {
+      const res = await fetch(PROXY_BASE + "/" + path);
+      if (res.status === 401) throw new Error("Session expired — reload the page and log in.");
+      if (res.status === 501) { proxyMode = false; /* key removed server-side — fall through */ }
+      else {
+        if (!res.ok) throw new Error(statusMsg(res.status));
+        const body = await res.json();
+        return body.data !== undefined ? body.data : body;
       }
     }
-    if (!key) throw new Error("No API key: the server has none configured and none is saved here. Add one in Account.");
+    if (!key) throw new Error("No API key saved here (and no server key available). Add yours in Account — get a free one from the HenrikDev Discord.");
     const res = await fetch(DIRECT_BASE + "/" + path, { headers: { Authorization: key } });
     if (!res.ok) throw new Error(statusMsg(res.status));
     const body = await res.json();
