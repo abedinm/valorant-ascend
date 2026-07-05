@@ -772,6 +772,41 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
 .pwl.fail i { color: var(--red-2); }
 .pw-mismatch { margin-top: .7rem; display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; font-size: .88rem; color: var(--text-dim); }
 
+/* ---------- daily routine flow ---------- */
+.daily-chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+.flow-progress { background: rgba(47,232,200,.12); color: var(--teal); border-color: rgba(47,232,200,.4); }
+.flow { display: flex; flex-direction: column; }
+.flow-step {
+  display: grid; grid-template-columns: 52px 1fr; gap: 1rem;
+  position: relative; padding-bottom: 1.1rem;
+}
+.flow-step::before {
+  content: ""; position: absolute; left: 25px; top: 46px; bottom: -2px; width: 3px;
+  background: var(--line-2); z-index: 0;
+}
+.flow-step:last-child::before { display: none; }
+.flow-step.done::before { background: var(--teal); }
+.fs-rail { position: relative; z-index: 1; }
+.fs-num {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--panel); border: 3px solid var(--line-2);
+  font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; color: var(--text-dim);
+  transition: .25s;
+}
+.fs-done-ico { display: none; font-size: 1.2rem; }
+.flow-step.done .fs-num { background: var(--teal); border-color: var(--teal); color: #06121a; }
+.flow-step.done .fs-num .fs-n { display: none; }
+.flow-step.done .fs-num .fs-done-ico { display: block; }
+.fs-card { margin-bottom: 0; transition: border-color .25s; }
+.flow-step.done .fs-card { border-color: rgba(47,232,200,.45); }
+.flow-step.done .fs-card .card-h i { color: var(--teal); }
+.flow-item { margin: .2rem 0; }
+@media (max-width: 560px) {
+  .flow-step { grid-template-columns: 40px 1fr; gap: .7rem; }
+  .fs-num { width: 36px; height: 36px; font-size: .95rem; }
+  .flow-step::before { left: 19px; top: 38px; }
+}
+
 /* ---------- daily pull ---------- */
 .daily-pull { align-items: center; }
 .daily-pull .btn { flex: none; }
