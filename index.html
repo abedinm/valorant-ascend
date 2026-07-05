@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VALORANT ASCEND // Silver to Ascendant</title>
+  <meta name="description" content="A drill-based Valorant improvement course for a disciplined Reyna entry main climbing Silver to Diamond.">
+  <!-- Tactical display fonts. Degrade gracefully to system fonts if offline. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tabler outline icon webfont -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css?v=5">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <canvas id="fx3d" aria-hidden="true"></canvas>
+
+  <!-- ===== Top nav ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"><i class="ti ti-triangle-inverted"></i></span>
+      <span class="brand-text">VALORANT <strong>ASCEND</strong></span>
+    </div>
+    <button id="topbar-id" class="topbar-id" title="Account intel" style="display:none"></button>
+    <div id="xp-bar" class="xp-bar" aria-label="Operator level progress"></div>
+    <nav class="nav">
+      <button class="nav-link" data-view="dashboard"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+      <button class="nav-link" data-view="modules"><i class="ti ti-stack-2"></i><span>Modules</span></button>
+      <button class="nav-link" data-view="daily"><i class="ti ti-calendar-check"></i><span>Daily</span></button>
+      <button class="nav-link" data-view="roadmap"><i class="ti ti-route"></i><span>Pathway</span></button>
+      <button class="nav-link" data-view="intel"><i class="ti ti-radar-2"></i><span>Intel</span></button>
+      <button class="nav-link" data-view="schedule"><i class="ti ti-calendar-week"></i><span>Schedule</span></button>
+    </nav>
+  </header>
+
+  <!-- ===== Session Guard bar ===== -->
+  <div id="session-bar" class="session-bar" aria-label="Today's session tracker"></div>
+
+  <!-- ===== Views (app.js fills these) ===== -->
+  <main class="wrap" id="main" tabindex="-1">
+    <section id="view-dashboard" class="view"></section>
+    <section id="view-modules" class="view"></section>
+    <section id="view-daily" class="view"></section>
+    <section id="view-roadmap" class="view"></section>
+    <section id="view-intel" class="view"></section>
+    <section id="view-schedule" class="view"></section>
+  </main>
+
+  <footer class="foot">
+    <span>VALORANT ASCEND &middot; personal training tool</span>
+    <span id="sync-status" class="sync-status off" role="status" aria-live="polite">Local only</span>
+    <a href="#" id="export-link" class="foot-link" data-action="export-data">Export data</a>
+    <a href="#" id="logout-link" class="foot-link">Sign out</a>
+  </footer>
+
+  <!-- ===== Floating tilt-check button ===== -->
+  <button id="tilt-fab" class="tilt-fab" aria-label="Run a tilt check">
+    <i class="ti ti-alert-triangle"></i>
+    <span>Tilt check</span>
+  </button>
+
+  <!-- ===== Tilt-check modal ===== -->
+  <div id="tilt-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tilt-title">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="tilt-title"><i class="ti ti-brain"></i> Tilt Check</h2>
+        <button class="modal-x" data-action="tilt-close" aria-label="Close"><i class="ti ti-x"></i></button>
+      </div>
+      <div id="tilt-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js?v=5"></script>
+  <script src="js/storage.js?v=5"></script>
+  <script src="js/sync.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/fx3d.js?v=5"></script>
+  <script src="js/fx-ui.js?v=5"></script>
+  <script src="js/api.js?v=5"></script>
+  <script src="js/game.js?v=5"></script>
+  <script src="js/session.js?v=5"></script>
+  <script src="js/pathway3d.js?v=5"></script>
+</body>
+</html>
