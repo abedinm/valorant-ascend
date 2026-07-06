@@ -15,6 +15,14 @@
   /* ---------- boot ---------- */
   document.addEventListener("DOMContentLoaded", init);
 
+  /* register the service worker (installable + offline). Registered from a
+     'self' script so it satisfies the backend CSP. */
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+
   function init() {
     wireNav();
     wireGlobalClicks();
@@ -170,7 +178,10 @@
           <h1 class="page-title">WELCOME BACK, ${escapeHtml(heroName)}</h1>
           ${coachLine(a0)}
         </div>
-        <button class="btn btn-ghost" data-action="tilt-open"><i class="ti ti-alert-triangle"></i> Tilt check</button>
+        <div class="head-actions">
+          <button class="btn" data-action="open-range"><i class="ti ti-flame"></i> Warm up</button>
+          <button class="btn btn-ghost" data-action="tilt-open"><i class="ti ti-alert-triangle"></i> Tilt check</button>
+        </div>
       </header>
 
       ${acctBanner()}
@@ -235,6 +246,7 @@
       </section>
 
       ${typeof VAGAME !== "undefined" && VAGAME.questCard ? VAGAME.questCard() : ""}
+      ${typeof VADEBRIEF !== "undefined" && VADEBRIEF.widget ? VADEBRIEF.widget() : ""}
       ${typeof VAGAME !== "undefined" ? VAGAME.dashboardCard() : ""}
       ${typeof VAGAME !== "undefined" ? VAGAME.badgeWall() : ""}
 
@@ -409,6 +421,9 @@
       weekday: "long", month: "short", day: "numeric"
     });
     const flow = Store.getDayFlow();
+    /* a pattern promoted from Debrief pre-fills the focus goal, once */
+    const pendingFocus = Store.get("va_pendingFocus", null);
+    if (pendingFocus) { day.focus = day.focus || pendingFocus; localStorage.removeItem("va_pendingFocus"); }
     const flowCheck = (k, text) => `
       <label class="check flow-item ${flow[k] ? "done" : ""}">
         <input type="checkbox" data-flow="${k}" ${flow[k] ? "checked" : ""}>
@@ -436,6 +451,7 @@
           <div class="fs-rail"><span class="fs-num"><i class="ti ti-check fs-done-ico"></i><span class="fs-n">1</span></span></div>
           <section class="card fs-card">
             <h2 class="card-h"><i class="ti ti-flame"></i> Warm up — never queue cold</h2>
+            <button class="btn range-launch" data-action="open-range"><i class="ti ti-player-play"></i> Run the warmup timer (hands-free)</button>
             ${flowCheck("w_drills", "15 min drills: head-taps + counter-strafe reps (Range or Aim Labs)")}
             ${flowCheck("w_dm", "One deathmatch — crosshair placement only, ignore the score")}
           </section>
@@ -490,7 +506,8 @@
               <button class="toggle ${day.hit ? "on" : ""}" id="hit-yes" data-action="hit" data-val="1"><i class="ti ti-check"></i> Focus goal: hit it</button>
               <button class="toggle ${day.hit === false && (Store.getDay(key)) ? "off" : ""}" id="hit-no" data-action="hit" data-val="0"><i class="ti ti-x"></i> Not today</button>
             </div>
-            ${flowCheck("d_review", "Reviewed 3 deaths with the 4 questions (Module 06)")}
+            <button class="btn range-launch" data-action="open-debrief"><i class="ti ti-device-tv"></i> Tap-review your deaths</button>
+            ${flowCheck("d_review", "Reviewed 3 deaths — pattern logged")}
             <p class="muted">Missing the goal is data, not failure — the review is where it converts.</p>
           </section>
         </div>
@@ -1093,6 +1110,8 @@
         case "sess-bank": if (typeof VASESSION !== "undefined") VASESSION.bank(); break;
         case "sess-override": if (typeof VASESSION !== "undefined") VASESSION.override(); break;
         case "export-data": e.preventDefault(); exportData(); break;
+        case "open-range": if (typeof VARANGE !== "undefined") { window.__rangeDone = () => { renderDaily(); renderDashboard(); }; VARANGE.open(); } break;
+        case "open-debrief": if (typeof VADEBRIEF !== "undefined") { window.__debriefDone = () => { if (VADEBRIEF.todayCount() > 0) Store.setDayFlowItem("d_review", true); renderDaily(); renderDashboard(); }; VADEBRIEF.open(); } break;
         case "tilt-open": openTilt(); break;
         default: break;
       }

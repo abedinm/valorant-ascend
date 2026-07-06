@@ -772,6 +772,76 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
 .pwl.fail i { color: var(--red-2); }
 .pw-mismatch { margin-top: .7rem; display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; font-size: .88rem; color: var(--text-dim); }
 
+/* ---------- The Range (warmup timer) ---------- */
+.head-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.range-launch { margin-bottom: .8rem; }
+.range-card {
+  position: relative; width: min(94vw, 440px); text-align: center;
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--line-2); border-top: 3px solid var(--teal);
+  border-radius: var(--radius); padding: 2rem 1.6rem 1.6rem;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.range-kicker { font-family: var(--font-display); font-size: .7rem; letter-spacing: 3px; color: var(--teal); margin: 0; }
+.range-ring-wrap { position: relative; width: 240px; height: 240px; margin: .5rem 0; }
+.range-ring { width: 100%; height: 100%; }
+.range-ring-track { fill: none; stroke: var(--line-2); stroke-width: 12; }
+.range-ring-fill { fill: none; stroke: var(--teal); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset .3s linear; filter: drop-shadow(0 0 8px rgba(47,232,200,.5)); }
+.range-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3rem; }
+.range-phase-ico { font-size: 1.8rem; color: var(--teal); }
+.range-time { font-family: var(--font-display); font-weight: 800; font-size: 3.2rem; color: #fff; font-variant-numeric: tabular-nums; line-height: 1; }
+.range-phase { font-size: 1.3rem; text-transform: uppercase; color: #fff; margin: .2rem 0 0; }
+.range-detail { color: var(--text-dim); font-size: .92rem; margin: 0; max-width: 340px; }
+.range-dots { display: flex; gap: .4rem; margin: .6rem 0; }
+.range-dot { width: 30px; height: 5px; border-radius: 3px; background: var(--line-2); }
+.range-dot.cur { background: var(--teal); }
+.range-dot.done { background: rgba(47,232,200,.5); }
+.range-controls { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+.range-controls .btn-ghost { min-width: 44px; min-height: 44px; }
+.range-next { font-size: .82rem; color: var(--text-mute); margin: .5rem 0 0; }
+.range-done { display: flex; flex-direction: column; align-items: center; gap: .7rem; padding: 1rem; }
+.range-done i { font-size: 3rem; color: var(--teal); text-shadow: 0 0 18px rgba(47,232,200,.7); }
+.range-done h2 { font-size: 1.8rem; letter-spacing: 2px; color: #fff; }
+.range-done p { color: var(--text-dim); max-width: 320px; }
+
+/* ---------- Debrief death review ---------- */
+.db-card { max-width: 560px; }
+.db-lead { color: var(--text-dim); margin: 0 0 1rem; }
+.db-mech { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.db-mech-q { font-family: var(--font-display); font-size: .8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-mute); }
+.db-mech-btn {
+  background: var(--panel-2); border: 1px solid var(--line-2); color: var(--text-dim);
+  border-radius: 999px; padding: .4rem .9rem; cursor: pointer; font-family: var(--font-body); font-size: .85rem;
+}
+.db-mech-btn.on { border-color: var(--teal); color: var(--teal); background: rgba(47,232,200,.1); }
+.db-patterns { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .5rem; margin-bottom: 1.4rem; }
+.db-pattern {
+  display: flex; align-items: center; gap: .5rem; text-align: left;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  border-radius: var(--radius); padding: .7rem .8rem; cursor: pointer;
+  font-family: var(--font-body); font-size: .88rem; transition: .12s; min-height: 44px;
+}
+.db-pattern i { color: var(--red); font-size: 1.1rem; flex: none; }
+.db-pattern:hover { border-color: var(--red); transform: translateY(-2px); }
+.db-pattern:active { transform: scale(.97); }
+.db-chart-h { font-family: var(--font-display); font-size: .95rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin: 0 0 .7rem; border-top: 1px dashed var(--line-2); padding-top: 1rem; }
+.db-chart-h i { color: var(--teal); }
+.db-verdict { color: var(--text); margin: 0 0 .8rem; }
+.db-verdict strong { color: var(--red-2); }
+.db-bars { display: grid; gap: .5rem; margin-bottom: 1.1rem; }
+.db-bar-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: .7rem; align-items: center; font-size: .85rem; }
+.db-bar-label { color: var(--text-dim); display: inline-flex; gap: .4rem; align-items: center; }
+.db-bar-label i { color: var(--red); }
+.db-bar-track { height: 8px; background: var(--line-2); border-radius: 4px; overflow: hidden; }
+.db-bar-fill { display: block; height: 100%; background: var(--red); border-radius: 4px; transition: width .5s; }
+.db-bar-n { font-family: var(--font-display); font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+.db-goal { width: 100%; }
+.db-note { font-size: .9rem; }
+.db-widget-top { display: flex; align-items: center; gap: .5rem; font-family: var(--font-display); font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 .8rem; }
+.db-widget-top i { color: var(--red); font-size: 1.3rem; }
+.db-widget-n { color: var(--text-mute); font-weight: 600; font-size: .8rem; text-transform: none; letter-spacing: 0; }
+
 /* ---------- daily routine flow ---------- */
 .daily-chips { display: flex; gap: .5rem; flex-wrap: wrap; }
 .flow-progress { background: rgba(47,232,200,.12); color: var(--teal); border-color: rgba(47,232,200,.4); }
