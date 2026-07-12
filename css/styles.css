@@ -1174,3 +1174,93 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
   .tilt-fab span { display: none; }
   .tilt-fab { padding: .9rem; border-radius: 50%; }
 }
+
+/* ==========================================================================
+   Agent Fit view (agentfit.js)
+   ========================================================================== */
+.lock-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.lock-panel.locked { border-left-color: var(--teal); }
+.lock-head {
+  font-family: "Oxanium", sans-serif;
+  font-weight: 800;
+  letter-spacing: .1em;
+  font-size: 15px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.lock-head b { color: var(--teal); }
+.lock-since { color: var(--text-mute); font-size: 12px; font-weight: 500; }
+.lock-panel p { color: var(--text-dim); font-size: 13.5px; margin: 8px 0 0; line-height: 1.55; }
+.lock-comp { margin-top: 10px; font-size: 13px; color: var(--text-dim); }
+.lock-comp.good b { color: var(--teal); }
+.lock-comp.bad b { color: var(--red); }
+.lock-break {
+  margin-top: 12px;
+  background: transparent; border: 1px solid var(--line-2); color: var(--text-mute);
+  font: 600 12px "Chakra Petch", sans-serif; letter-spacing: .06em;
+  padding: 7px 12px; border-radius: 8px; cursor: pointer;
+}
+.lock-break:hover { border-color: var(--red); color: var(--red); }
+
+.fit-list { display: flex; flex-direction: column; gap: 10px; }
+.fit-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  position: relative;
+}
+.fit-card.is-locked { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal), 0 6px 24px rgba(47,232,200,.12); }
+.fit-rank {
+  font-family: "Oxanium", sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--text-mute); min-width: 34px; padding-top: 3px;
+}
+.fit-tier {
+  font-family: "Oxanium", sans-serif; font-weight: 800; font-size: 16px;
+  width: 34px; height: 34px; border-radius: 8px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.fit-tier.t-S { background: rgba(47,232,200,.14); color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal); }
+.fit-tier.t-A { background: rgba(47,232,200,.08); color: #8fe9dd; box-shadow: inset 0 0 0 1px rgba(47,232,200,.4); }
+.fit-tier.t-B { background: rgba(231,238,243,.06); color: var(--text-dim); box-shadow: inset 0 0 0 1px var(--line-2); }
+.fit-tier.t-C { background: rgba(255,212,71,.08); color: #ffd447; box-shadow: inset 0 0 0 1px rgba(255,212,71,.4); }
+.fit-tier.t-D { background: rgba(255,70,85,.1); color: var(--red); box-shadow: inset 0 0 0 1px rgba(255,70,85,.5); }
+.fit-main { flex: 1; min-width: 0; }
+.fit-name {
+  font-family: "Oxanium", sans-serif; font-weight: 700; font-size: 16px;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.fit-role { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-mute); font-weight: 600; }
+.fit-score { font-size: 13px; color: var(--teal); font-weight: 800; }
+.fit-ev { font-size: 11.5px; color: var(--text-dim); font-family: "Chakra Petch", sans-serif; font-weight: 500; }
+.fit-ev.dim { color: var(--text-mute); opacity: .7; }
+.fit-why { margin-top: 6px; font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
+.fit-tip { margin-top: 7px; font-size: 12.5px; color: var(--teal); display: flex; gap: 7px; align-items: flex-start; }
+.fit-tip .ti { flex: none; margin-top: 1px; }
+.fit-lock {
+  flex: none; align-self: center;
+  background: var(--teal); color: #05221d; border: 0; cursor: pointer;
+  font: 800 12px "Oxanium", sans-serif; letter-spacing: .08em;
+  padding: 10px 14px; border-radius: 9px;
+  display: inline-flex; align-items: center; gap: 7px;
+  box-shadow: 0 6px 20px rgba(47,232,200,.25);
+}
+.fit-lock:hover { transform: translateY(-1px); }
+.fit-lock.ghost {
+  background: transparent; color: var(--text-mute);
+  box-shadow: inset 0 0 0 1px var(--line-2); font-weight: 600;
+}
+.fit-lock.ghost:hover { color: var(--text-dim); }
+.fit-foot { margin-top: 18px; font-size: 12px; color: var(--text-mute); line-height: 1.6; }
+@media (max-width: 640px) {
+  .fit-card { flex-wrap: wrap; }
+  .fit-rank { min-width: 24px; }
+  .fit-lock { width: 100%; justify-content: center; }
+}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABEDIN // ASCEND — Motion Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#ff4655; --teal:#2fe8c8; --gold:#ffd447;
+    --ink:#05080a; --ink2:#0b1014; --panel:#0e161b; --line:#1d2b30; --dim:#7f9296;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:radial-gradient(140% 100% at 50% -10%,#101a20,#05080a 60%);
+    color:#eaf6f4;font-family:"Chakra Petch",system-ui,sans-serif;min-height:100%}
+  a{color:var(--teal);text-decoration:none}
+  header{padding:26px clamp(16px,4vw,48px) 8px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:12px;font-family:"Oxanium";font-weight:800;letter-spacing:.14em;font-size:20px}
+  .brand .tri{color:var(--red);filter:drop-shadow(0 0 10px var(--red))}
+  .brand span{color:var(--teal)}
+  .sub{color:var(--dim);font-size:13px;letter-spacing:.2em;text-transform:uppercase;padding-left:2px}
+  .playall{font-family:"Oxanium";font-weight:800;letter-spacing:.12em;cursor:pointer;
+    border:0;color:#05080a;background:linear-gradient(100deg,var(--teal),#7ef4dd);
+    padding:12px 22px;border-radius:10px;font-size:14px;box-shadow:0 8px 30px rgba(47,232,200,.25);
+    transition:transform .15s, box-shadow .15s}
+  .playall:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(47,232,200,.4)}
+  .hint{padding:0 clamp(16px,4vw,48px);color:var(--dim);font-size:13px;max-width:820px;line-height:1.5}
+  .hint b{color:#cfe}
+
+  .grid{display:grid;gap:18px;padding:20px clamp(16px,4vw,48px) 60px;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .clip{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    position:relative;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  .clip .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#05080a}
+  .clip.vert .stage{aspect-ratio:9/16;max-height:520px;margin:0 auto}
+  .clip .cap{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:11px 14px;border-top:1px solid var(--line)}
+  .clip .cap b{font-family:"Oxanium";font-weight:700;letter-spacing:.08em;font-size:13px}
+  .clip .cap .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+    border:1px solid var(--line);border-radius:20px;padding:3px 9px}
+  .clip .rec{position:absolute;top:10px;right:10px;z-index:6;font:600 10px "Chakra Petch";
+    letter-spacing:.12em;color:#cfe;background:rgba(0,0,0,.45);border:1px solid #2a3a3e;
+    border-radius:20px;padding:4px 9px;cursor:pointer;opacity:0;transition:opacity .15s}
+  .clip:hover .rec{opacity:1}
+  .cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .noweb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:12px}
+
+  /* shared scene bits */
+  .tgrid{position:absolute;inset:-30%;background-image:
+      linear-gradient(rgba(47,232,200,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(47,232,200,.05) 1px,transparent 1px);
+    background-size:36px 36px;transform:perspective(500px) rotateX(56deg) translateY(12%);
+    mask-image:radial-gradient(70% 60% at 50% 42%,#000 40%,transparent 85%);animation:gdrift 10s linear infinite}
+  @keyframes gdrift{to{background-position:0 36px,36px 0}}
+  .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.65))}
+  .flex{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 10%}
+
+  /* ---- INTRO scene ---- */
+  .s-name{font-family:"Oxanium";font-weight:800;letter-spacing:.16em;font-size:clamp(26px,6vw,50px);
+    text-shadow:0 0 26px rgba(47,232,200,.35);animation:sName 7s infinite both}
+  @keyframes sName{0%,4%{opacity:0;filter:blur(12px);letter-spacing:.5em}12%{opacity:1;filter:blur(0);letter-spacing:.16em}
+    38%{opacity:1}46%{opacity:0;transform:translateY(-14px)}100%{opacity:0}}
+  .s-ascend{font-family:"Oxanium";font-weight:800;letter-spacing:.05em;font-size:clamp(40px,10vw,86px);line-height:.9;
+    background:linear-gradient(100deg,#fff,var(--teal) 45%,var(--red));-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 28px rgba(255,70,85,.35));animation:sAsc 7s infinite both}
+  @keyframes sAsc{0%,50%{opacity:0;transform:scale(1.5);filter:blur(16px)}58%{opacity:1;transform:scale(1);filter:blur(0)}
+    60%{transform:scale(1.04)}63%{transform:scale(1)}92%{opacity:1}100%{opacity:0}}
+  .s-tag{margin-top:16px;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:#cfe;font-size:clamp(9px,2vw,13px);animation:sTag 7s infinite both}
+  @keyframes sTag{0%,58%{opacity:0}66%{opacity:.9}92%{opacity:.9}100%{opacity:0}}
+  .s-tag b{color:var(--red)}
+
+  /* ---- OUTRO scene ---- */
+  .o-line{font-family:"Oxanium";font-weight:800;letter-spacing:.14em;font-size:clamp(22px,5.5vw,44px);animation:oLine 6s infinite both}
+  @keyframes oLine{0%{opacity:0;transform:translateY(14px)}10%{opacity:1;transform:none}86%{opacity:1}100%{opacity:0}}
+  .o-line .r{color:var(--red)}.o-line .t{color:var(--teal)}
+  .o-sub{margin-top:22px;display:inline-flex;align-items:center;gap:10px;font-family:"Oxanium";font-weight:800;letter-spacing:.1em;
+    color:#05080a;background:var(--red);padding:11px 20px;border-radius:30px;font-size:clamp(12px,2.6vw,16px);
+    box-shadow:0 0 0 0 rgba(255,70,85,.5);animation:oPulse 1.6s infinite,oIn 6s infinite both}
+  @keyframes oPulse{0%{box-shadow:0 0 0 0 rgba(255,70,85,.5)}70%{box-shadow:0 0 0 16px rgba(255,70,85,0)}100%{box-shadow:0 0 0 0 rgba(255,70,85,0)}}
+  @keyframes oIn{0%,20%{opacity:0;transform:scale(.8)}30%{opacity:1;transform:scale(1)}86%{opacity:1}100%{opacity:0}}
+  .o-mark{position:absolute;bottom:8%;left:0;right:0;text-align:center;font-family:"Oxanium";font-weight:700;
+    letter-spacing:.3em;color:var(--dim);font-size:clamp(9px,2vw,12px);text-transform:uppercase}
+  .o-mark span{color:var(--teal)}
+
+  /* ---- BADGE scene ---- */
+  .b-wrap{perspective:800px}
+  .b-hex{width:clamp(90px,26%,150px);aspect-ratio:1;position:relative;transform-style:preserve-3d;animation:bFlip 5s infinite both}
+  @keyframes bFlip{0%{transform:rotateY(-120deg) scale(.6);opacity:0}18%{transform:rotateY(0) scale(1);opacity:1}
+    22%{transform:rotateY(0) scale(1.08)}26%{transform:rotateY(0) scale(1)}86%{opacity:1}100%{opacity:0;transform:scale(.9)}}
+  .b-hex .face{position:absolute;inset:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    background:linear-gradient(150deg,#12222a,#0a1418);border:2px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,212,71,.4)}
+  .b-hex .face i{font-family:"Oxanium";font-weight:800;font-size:clamp(28px,8vw,54px);color:var(--gold);text-shadow:0 0 18px var(--gold)}
+  .b-ring{position:absolute;width:130%;height:130%;left:-15%;top:-15%;border-radius:50%;
+    border:2px dashed rgba(255,212,71,.5);animation:bSpin 6s linear infinite}
+  @keyframes bSpin{to{transform:rotate(360deg)}}
+  .b-txt{position:absolute;bottom:16%;left:0;right:0;text-align:center;animation:bTxt 5s infinite both}
+  .b-txt .u{font-family:"Oxanium";font-weight:800;letter-spacing:.3em;color:var(--gold);font-size:clamp(10px,2.4vw,14px)}
+  .b-txt .n{margin-top:5px;font-weight:600;letter-spacing:.12em;color:#eaf6f4;font-size:clamp(11px,2.6vw,16px)}
+  @keyframes bTxt{0%,26%{opacity:0}34%{opacity:1}86%{opacity:1}100%{opacity:0}}
+
+  /* ---- ACE scene ---- */
+  .a-skulls{position:absolute;top:16%;left:0;right:0;display:flex;justify-content:center;gap:10px}
+  .a-skulls b{width:clamp(14px,4vw,24px);height:clamp(14px,4vw,24px);border-radius:4px;transform:rotate(45deg);
+    background:#2a3a3e;box-shadow:inset 0 0 0 1px #3a4a4e}
+  .a-ace{font-family:"Oxanium";font-weight:800;letter-spacing:.1em;font-size:clamp(46px,13vw,100px);
+    color:#fff;text-shadow:0 0 30px var(--red),0 0 60px var(--red);animation:aAce 5s infinite both}
+  @keyframes aAce{0%,52%{opacity:0;transform:scale(2)}58%{opacity:1;transform:scale(1)}60%{transform:scale(1.06) rotate(-1deg)}
+    64%{transform:scale(1)}88%{opacity:1}100%{opacity:0}}
+  .a-flash{position:absolute;inset:0;background:var(--red);mix-blend-mode:screen;opacity:0;animation:aFlash 5s infinite}
+  @keyframes aFlash{0%,54%{opacity:0}56%{opacity:.5}60%{opacity:0}100%{opacity:0}}
+  .shake{animation:shk .5s infinite}@keyframes shk{0%,100%{transform:translate(0,0)}}
+
+  /* theater / play-all */
+  .theater{position:fixed;inset:0;z-index:50;background:#000;display:none;flex-direction:column}
+  .theater.on{display:flex}
+  .theater .stagebig{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .theater .stagebig > *{width:100%;height:100%;position:absolute;inset:0}
+  .theater .bar{height:52px;display:flex;align-items:center;gap:16px;padding:0 20px;background:#080d10;border-top:1px solid var(--line)}
+  .theater .bar .t{font-family:"Oxanium";font-weight:700;letter-spacing:.1em;font-size:13px}
+  .theater .bar .prog{flex:1;height:4px;background:#1a262b;border-radius:3px;overflow:hidden}
+  .theater .bar .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--red))}
+  .theater .bar button{font-family:"Oxanium";font-weight:700;letter-spacing:.08em;cursor:pointer;
+    background:transparent;border:1px solid var(--line);color:#cfe;border-radius:8px;padding:8px 14px;font-size:12px}
+  .theater .cd{position:absolute;top:14px;left:16px;z-index:3;font-family:"Oxanium";font-weight:800;letter-spacing:.16em;
+    color:var(--dim);font-size:12px}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand"><span class="tri">&#9660;</span> ABEDIN <span>ASCEND</span></div>
+      <div class="sub">Motion Gallery &middot; 9 clips</div>
+    </div>
+    <button class="playall" id="playall">&#9654; PLAY ALL (record montage)</button>
+  </header>
+  <p class="hint">Every tile is a live, looping clip built in your brand — <b>3D, gamification, HUD motion</b>.
+    Hover a tile and hit <b>Rec tip</b> for how to capture it, or click <b>PLAY ALL</b> to run them full-screen
+    back-to-back and record one continuous montage. Nothing here is AI-rented — it's all yours, re-recordable anytime.</p>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="theater" id="theater">
+    <div class="stagebig" id="stagebig"><div class="cd" id="cd"></div></div>
+    <div class="bar">
+      <span class="t" id="tt">—</span>
+      <span class="prog"><i id="pi"></i></span>
+      <button id="skip">Skip &#9654;&#9654;</button>
+      <button id="closeT">Close &#10005;</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="gallery.js"></script>
+  <script type="text/plain" data-inert>
+  const RED=0xff4655, TEAL=0x2fe8c8, GOLD=0xffd447;
+  const rgb={red:'#ff4655',teal:'#2fe8c8',gold:'#ffd447',dim:'#7f9296'};
+
+  /* ---------- framework ---------- */
+  function canvasScene(container, draw){
+    const c=document.createElement('canvas'); c.className='cv'; container.appendChild(c);
+    const ctx=c.getContext('2d'); let w=1,h=1,dpr=Math.min(2,devicePixelRatio||1),raf,t0=null,run=false;
+    function size(){const r=container.getBoundingClientRect(); if(!r.width)return;
+      w=r.width;h=r.height; c.width=w*dpr;c.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);}
+    size(); new ResizeObserver(size).observe(container);
+    function frame(ts){ if(t0==null)t0=ts; const t=(ts-t0)/1000; ctx.clearRect(0,0,w,h); draw(ctx,w,h,t); raf=requestAnimationFrame(frame);}
+    return {start(){if(run)return;run=true;t0=null;raf=requestAnimationFrame(frame);},stop(){run=false;cancelAnimationFrame(raf);}};
+  }
+  function threeScene(container, build){
+    if(!window.THREE){const d=document.createElement('div');d.className='noweb';d.textContent='3D unavailable';container.appendChild(d);return{start(){},stop(){}};}
+    const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(2,devicePixelRatio||1)); renderer.domElement.className='cv'; container.appendChild(renderer.domElement);
+    const scene=new THREE.Scene(); const camera=new THREE.PerspectiveCamera(50,1.6,0.1,100);
+    const api=build(scene,camera,THREE)||{};
+    function size(){const r=container.getBoundingClientRect(); if(!r.width)return; renderer.setSize(r.width,r.height,false);
+      camera.aspect=r.width/r.height; camera.updateProjectionMatrix();}
+    size(); new ResizeObserver(size).observe(container);
+    let raf,t0=null,run=false;
+    function frame(ts){ if(t0==null)t0=ts; const t=(ts-t0)/1000; api.update&&api.update(t); renderer.render(scene,camera); raf=requestAnimationFrame(frame);}
+    return {start(){if(run)return;run=true;t0=null;raf=requestAnimationFrame(frame);},stop(){run=false;cancelAnimationFrame(raf);}};
+  }
+  const easeOut=t=>1-Math.pow(1-t,3);
+  const loop=(t,p)=>((t%p)/p);
+  function text(ctx,s,x,y,font,fill,align='center',shadow){ctx.save();ctx.font=font;ctx.textAlign=align;ctx.textBaseline='middle';
+    if(shadow){ctx.shadowBlur=shadow.b;ctx.shadowColor=shadow.c;} ctx.fillStyle=fill;ctx.fillText(s,x,y);ctx.restore();}
+
+  /* ---------- scene builders ---------- */
+  const SCENES=[];
+  const add=(o)=>SCENES.push(o);
+
+  // 1 INTRO (css + particle canvas)
+  add({title:'ASCEND Intro', kind:'Intro', vert:true, build(st){
+    st.innerHTML='<div class="tgrid"></div><div class="flex"><div class="s-name">ABEDIN</div></div>'+
+      '<div class="flex"><div class="s-ascend">ASCEND</div><div class="s-tag">Climb &middot; <b>Lock in</b> &middot; Ascend</div></div>'+
+      '<div class="vig"></div>';
+    const layer=document.createElement('div'); layer.style.cssText='position:absolute;inset:0'; st.insertBefore(layer,st.firstChild.nextSibling);
+    let P=[];
+    return canvasScene(layer,(ctx,w,h,t)=>{
+      if(P.length===0)for(let i=0;i<48;i++)P.push({x:Math.random()*w,y:Math.random()*h,r:.6+Math.random()*2,vy:-.15-Math.random()*.5,a:.1+Math.random()*.4,red:Math.random()<.3});
+      for(const p of P){p.y+=p.vy; if(p.y<-4){p.y=h+4;p.x=Math.random()*w;}
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.shadowBlur=8;ctx.shadowColor=p.red?rgb.red:rgb.teal;
+        ctx.fillStyle=(p.red?'rgba(255,70,85,':'rgba(47,232,200,')+p.a+')';ctx.fill();}
+    });
+  }});
+
+  // 2 RANK CLIMB (three.js staircase + climbing marker)
+  add({title:'Rank Climb 3D', kind:'Three.js', build(st){
+    const labels=['IRON','BRONZE','SILVER','GOLD','PLAT','DIAMOND','ASC','IMM','RAD'];
+    const ov=document.createElement('div'); ov.style.cssText='position:absolute;left:6%;bottom:8%;font-family:Oxanium;font-weight:800;letter-spacing:.14em;font-size:clamp(16px,4vw,30px);z-index:4;color:#eaf6f4;text-shadow:0 0 18px rgba(47,232,200,.5)';
+    st.appendChild(ov); const vig=document.createElement('div');vig.className='vig';st.appendChild(vig);
+    let idx=-1;
+    const ctrl=threeScene(st,(scene,camera,T)=>{
+      scene.fog=new T.FogExp2(0x05080a,0.08);
+      const steps=[]; const N=9;
+      for(let i=0;i<N;i++){
+        const g=new T.BoxGeometry(2.4,0.35,2.4);
+        const m=new T.MeshBasicMaterial({color:0x0e1a20});
+        const box=new T.Mesh(g,m); box.position.set(0,i*0.7,-i*1.7); scene.add(box);
+        const eg=new T.EdgesGeometry(g);
+        const line=new T.LineSegments(eg,new T.LineBasicMaterial({color:i===N-1?RED:TEAL,transparent:true,opacity:.25}));
+        box.add(line); steps.push({box,line,i});
+      }
+      const mk=new T.Mesh(new T.OctahedronGeometry(0.42),new T.MeshBasicMaterial({color:TEAL,wireframe:true}));
+      scene.add(mk);
+      const pts=new T.Points(
+        (()=>{const g=new T.BufferGeometry();const a=[];for(let i=0;i<300;i++)a.push((Math.random()-.5)*22,(Math.random())*14,-(Math.random()*18));
+          g.setAttribute('position',new T.Float32BufferAttribute(a,3));return g;})(),
+        new T.PointsMaterial({color:TEAL,size:0.03,transparent:true,opacity:.5}));
+      scene.add(pts);
+      camera.position.set(3.2,2.2,4);
+      return {update(t){
+        const p=loop(t,7); const climb=easeOut(Math.min(1,p*1.15))*(N-1);
+        const ci=Math.floor(climb);
+        mk.position.set(0,ci*0.7+0.7,-ci*1.7); mk.rotation.y+=0.05; mk.rotation.x+=0.03;
+        steps.forEach(s=>{ const on=s.i<=ci; s.line.material.opacity=on?(s.i===N-1&&ci>=N-1?.95:.7):.18;
+          s.line.material.color.setHex(s.i===N-1&&ci>=N-1?RED:TEAL); s.box.material.color.setHex(on?0x12242c:0x0e1a20);});
+        if(ci!==idx){idx=ci; ov.textContent=labels[Math.min(N-1,ci)]; ov.style.color=ci>=N-1?rgb.red:'#eaf6f4';}
+        camera.position.set(3.2,2.2+climb*0.62,4-climb*0.1); camera.lookAt(0,climb*0.6+0.5,-climb*1.5);
+        pts.rotation.y=t*0.04;
+      }};
+    });
+    return ctrl;
+  }});
+
+  // 3 LEVEL UP (canvas XP fill + burst)
+  add({title:'Level Up', kind:'Gamification', build(st){
+    st.innerHTML='<div class="tgrid"></div><div class="vig"></div>';
+    const layer=document.createElement('div');layer.style.cssText='position:absolute;inset:0';st.insertBefore(layer,st.lastChild);
+    let sparks=[];
+    return canvasScene(layer,(ctx,w,h,t)=>{
+      const p=loop(t,5); const cx=w/2, by=h*0.66, bw=w*0.6, bh=Math.max(10,h*0.045), bx=cx-bw/2;
+      let fill=easeOut(Math.min(1,p/0.55));
+      // bar bg
+      ctx.fillStyle='rgba(255,255,255,.08)';roundRect(ctx,bx,by,bw,bh,bh/2);ctx.fill();
+      const grd=ctx.createLinearGradient(bx,0,bx+bw,0);grd.addColorStop(0,rgb.teal);grd.addColorStop(1,rgb.red);
+      ctx.fillStyle=grd;ctx.shadowBlur=18;ctx.shadowColor=rgb.teal;roundRect(ctx,bx,by,bw*fill,bh,bh/2);ctx.fill();ctx.shadowBlur=0;
+      const lvl = p<0.55?11:12;
+      text(ctx,'LEVEL '+lvl,cx,by-h*0.16,'800 '+Math.round(h*0.14)+'px Oxanium', p<0.55?'#eaf6f4':rgb.gold,'center',{b:24,c:p<0.55?rgb.teal:rgb.gold});
+      text(ctx,Math.round(fill*100)+' / 100 XP',cx,by+bh+h*0.09,'600 '+Math.round(h*0.05)+'px Chakra Petch',rgb.dim);
+      if(p>=0.55&&p<0.58&&sparks.length===0){for(let i=0;i<40;i++){const a=Math.random()*7,s=1+Math.random()*4;sparks.push({x:cx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,l:1,red:Math.random()<.4});}}
+      if(p<0.5)sparks=[];
+      for(const s of sparks){s.x+=s.vx;s.y+=s.vy;s.vy+=0.08;s.l-=0.02;if(s.l<=0)continue;
+        ctx.globalAlpha=Math.max(0,s.l);ctx.beginPath();ctx.arc(s.x,s.y,2.2,0,7);ctx.fillStyle=s.red?rgb.red:rgb.gold;
+        ctx.shadowBlur=10;ctx.shadowColor=ctx.fillStyle;ctx.fill();ctx.globalAlpha=1;ctx.shadowBlur=0;}
+      if(p>=0.58){text(ctx,'LEVEL UP',cx,h*0.3,'800 '+Math.round(h*0.11)+'px Oxanium',rgb.gold,'center',{b:26,c:rgb.gold});}
+    });
+  }});
+
+  // 4 ACE (css skulls + slam + shake)
+  add({title:'ACE — Round Clutch', kind:'Gamification', build(st){
+    st.innerHTML='<div class="tgrid"></div>'+
+      '<div class="a-skulls"><b></b><b></b><b></b><b></b><b></b></div>'+
+      '<div class="flex"><div class="a-ace">ACE</div></div>'+
+      '<div class="a-flash"></div><div class="vig"></div>';
+    const skulls=[...st.querySelectorAll('.a-skulls b')];
+    function run(){ skulls.forEach((s,i)=>{s.style.background='#2a3a3e';s.style.boxShadow='inset 0 0 0 1px #3a4a4e';
+      setTimeout(()=>{s.style.background=rgb.red;s.style.boxShadow='0 0 14px '+rgb.red;},400+i*380);});
+      st.classList.remove('shake'); void st.offsetWidth;
+      setTimeout(()=>{st.classList.add('shake');},2700); setTimeout(()=>st.classList.remove('shake'),3100);
+    }
+    let iv; return {start(){run();clearInterval(iv);iv=setInterval(run,5000);},stop(){clearInterval(iv);}};
+  }});
+
+  // 5 BADGE UNLOCK (css 3d flip)
+  add({title:'Badge Unlock', kind:'Gamification', build(st){
+    st.innerHTML='<div class="tgrid"></div><div class="flex b-wrap">'+
+      '<div class="b-hex"><div class="b-ring"></div><div class="face"><i>&#9650;</i></div></div></div>'+
+      '<div class="b-txt"><div class="u">UNLOCKED</div><div class="n">The Exit &middot; banked a win</div></div><div class="vig"></div>';
+    return {start(){},stop(){}};
+  }});
+
+  // 6 KILL STREAK (canvas number ticker + combo)
+  add({title:'Kill Streak', kind:'HUD', build(st){
+    st.innerHTML='<div class="tgrid"></div><div class="vig"></div>';
+    const layer=document.createElement('div');layer.style.cssText='position:absolute;inset:0';st.insertBefore(layer,st.lastChild);
+    const words=['','FIRST BLOOD','DOUBLE','TRIPLE','QUAD','MEGA','RAMPAGE','UNSTOPPABLE','GODLIKE'];
+    return canvasScene(layer,(ctx,w,h,t)=>{
+      const p=loop(t,6); const n=Math.min(8,Math.floor(p*11)+1); const cx=w/2,cy=h*0.46;
+      const pop=1+0.12*Math.max(0,1-((p*11)%1)*3);
+      ctx.save();ctx.translate(cx,cy);ctx.scale(pop,pop);
+      text(ctx,String(n),0,0,'800 '+Math.round(h*0.34)+'px Oxanium','#fff','center',{b:30,c:n>=6?rgb.red:rgb.teal});
+      ctx.restore();
+      text(ctx,words[n],cx,cy+h*0.26,'700 '+Math.round(h*0.08)+'px Oxanium',n>=6?rgb.red:rgb.teal,'center',{b:16,c:n>=6?rgb.red:rgb.teal});
+      text(ctx,'KILL STREAK',cx,h*0.14,'700 '+Math.round(h*0.05)+'px Chakra Petch',rgb.dim);
+      // combo multiplier arc
+      ctx.strokeStyle=n>=6?rgb.red:rgb.teal;ctx.lineWidth=Math.max(2,h*0.012);ctx.shadowBlur=14;ctx.shadowColor=ctx.strokeStyle;
+      ctx.beginPath();ctx.arc(cx,cy,h*0.3,-Math.PI/2,-Math.PI/2+(n/8)*Math.PI*2);ctx.stroke();ctx.shadowBlur=0;
+    });
+  }});
+
+  // 7 STAT RADIALS (canvas rings count-up)
+  add({title:'Match Stats Reveal', kind:'HUD', build(st){
+    st.innerHTML='<div class="tgrid"></div><div class="vig"></div>';
+    const layer=document.createElement('div');layer.style.cssText='position:absolute;inset:0';st.insertBefore(layer,st.lastChild);
+    const stats=[{l:'HS %',v:0.34,c:rgb.teal},{l:'K/D',v:0.72,c:rgb.gold,disp:'1.8'},{l:'WIN %',v:0.63,c:rgb.red}];
+    return canvasScene(layer,(ctx,w,h,t)=>{
+      const p=loop(t,5); const prog=easeOut(Math.min(1,p/0.6));
+      const r=Math.min(w,h)*0.16, gap=w/3;
+      text(ctx,'LAST 20 MATCHES',w/2,h*0.15,'700 '+Math.round(h*0.05)+'px Chakra Petch',rgb.dim);
+      stats.forEach((s,i)=>{
+        const cx=gap*(i+0.5), cy=h*0.52;
+        ctx.lineWidth=Math.max(4,h*0.03);
+        ctx.strokeStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.stroke();
+        ctx.strokeStyle=s.c;ctx.shadowBlur=14;ctx.shadowColor=s.c;
+        ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+s.v*prog*Math.PI*2);ctx.stroke();ctx.shadowBlur=0;
+        const val=s.disp?(1.8*prog).toFixed(1):Math.round(s.v*prog*100)+(s.l==='K/D'?'':'%');
+        text(ctx,String(val),cx,cy,'800 '+Math.round(r*0.6)+'px Oxanium','#eaf6f4','center',{b:10,c:s.c});
+        text(ctx,s.l,cx,cy+r+h*0.09,'700 '+Math.round(h*0.045)+'px Chakra Petch',s.c);
+      });
+    });
+  }});
+
+  // 8 CORE (three.js rotating wireframe core + particles)
+  add({title:'Tactical Core', kind:'Three.js', build(st){
+    const vig=document.createElement('div');
+    const ctrl=threeScene(st,(scene,camera,T)=>{
+      const core=new T.Mesh(new T.IcosahedronGeometry(1.15,0),new T.MeshBasicMaterial({color:RED,wireframe:true,transparent:true,opacity:.85}));
+      const inner=new T.Mesh(new T.IcosahedronGeometry(0.62,0),new T.MeshBasicMaterial({color:TEAL,wireframe:true}));
+      const ring=new T.Mesh(new T.TorusGeometry(1.7,0.012,8,80),new T.MeshBasicMaterial({color:TEAL,transparent:true,opacity:.6}));
+      ring.rotation.x=Math.PI/2.2; scene.add(core,inner,ring);
+      const g=new T.BufferGeometry(),a=[];for(let i=0;i<400;i++){const rr=2+Math.random()*4,th=Math.random()*7,ph=Math.acos(2*Math.random()-1);
+        a.push(rr*Math.sin(ph)*Math.cos(th),rr*Math.sin(ph)*Math.sin(th),rr*Math.cos(ph));}
+      g.setAttribute('position',new T.Float32BufferAttribute(a,3));
+      const pts=new T.Points(g,new T.PointsMaterial({color:0x8fe9dd,size:0.028,transparent:true,opacity:.55}));scene.add(pts);
+      camera.position.z=4.4;
+      return {update(t){core.rotation.x=t*0.3;core.rotation.y=t*0.42;inner.rotation.x=-t*0.6;inner.rotation.y=t*0.5;
+        ring.rotation.z=t*0.4;pts.rotation.y=t*0.06;const s=1+0.05*Math.sin(t*2);core.scale.set(s,s,s);}};
+    });
+    st.appendChild(Object.assign(document.createElement('div'),{className:'vig'}));
+    return ctrl;
+  }});
+
+  // 9 OUTRO (css cta)
+  add({title:'Outro / CTA', kind:'Outro', vert:true, build(st){
+    st.innerHTML='<div class="tgrid"></div>'+
+      '<div class="flex"><div class="o-line"><span class="r">LOCK IN.</span> <span class="t">ASCEND.</span></div>'+
+      '<a class="o-sub">&#9654; SUBSCRIBE</a></div>'+
+      '<div class="o-mark">ABEDIN<span>BUILDS</span> &middot; next rank loading</div><div class="vig"></div>';
+    return {start(){},stop(){}};
+  }});
+
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+  /* ---------- mount grid ---------- */
+  const grid=document.getElementById('grid'); const mounted=[];
+  SCENES.forEach((sc,i)=>{
+    const card=document.createElement('div'); card.className='clip'+(sc.vert?' vert':'');
+    const stage=document.createElement('div'); stage.className='stage';
+    card.appendChild(stage);
+    const rec=document.createElement('button'); rec.className='rec'; rec.textContent='Rec tip';
+    rec.onclick=()=>alert('Record this clip:\n1) Click PLAY ALL (top) or open it full-screen.\n2) Win+Alt+R (Xbox Game Bar) or NVIDIA Alt+F9.\n3) Capture one loop, trim in CapCut, add your beat.');
+    card.appendChild(rec);
+    const cap=document.createElement('div'); cap.className='cap';
+    cap.innerHTML='<b>'+String(i+1).padStart(2,'0')+' &middot; '+sc.title+'</b><span class="k">'+sc.kind+'</span>';
+    card.appendChild(cap); grid.appendChild(card);
+    const ctrl=sc.build(stage)||{start(){},stop(){}};
+    mounted.push({sc,card,stage,ctrl,home:stage});
+  });
+
+  // visibility gating
+  const io=new IntersectionObserver((ents)=>{ents.forEach(e=>{const m=mounted.find(x=>x.card===e.target);
+    if(!m)return; if(e.isIntersecting)m.ctrl.start&&m.ctrl.start(); else m.ctrl.stop&&m.ctrl.stop();});},{threshold:0.15});
+  mounted.forEach(m=>io.observe(m.card));
+
+  /* ---------- PLAY ALL theater ---------- */
+  const theater=document.getElementById('theater'), stagebig=document.getElementById('stagebig'),
+    tt=document.getElementById('tt'), pi=document.getElementById('pi'), cd=document.getElementById('cd');
+  let playing=false, seq=0, timer=null, rafp=null;
+  function playAll(){ if(playing)return; playing=true; theater.classList.add('on'); seq=0; runSeq(); }
+  function runSeq(){
+    if(!playing)return; if(seq>=mounted.length){ closeTheater(); return; }
+    const m=mounted[seq];
+    // borrow the real stage node into the big theater
+    stagebig.appendChild(m.stage); m.ctrl.start&&m.ctrl.start();
+    tt.textContent=(seq+1)+' / '+mounted.length+'  —  '+m.sc.title;
+    cd.textContent='ABEDIN // ASCEND';
+    const DUR=6500, t0=performance.now();
+    (function anim(){ if(!playing)return; const p=Math.min(1,(performance.now()-t0)/DUR); pi.style.width=(p*100)+'%';
+      if(p<1)rafp=requestAnimationFrame(anim); })();
+    timer=setTimeout(()=>{ // return node home, advance
+      cancelAnimationFrame(rafp);
+      m.home.appendChild(m.stage); seq++; runSeq();
+    }, DUR);
+  }
+  function closeTheater(){ playing=false; clearTimeout(timer); cancelAnimationFrame(rafp);
+    // ensure any borrowed node is returned
+    mounted.forEach(m=>{ if(m.stage.parentNode===stagebig) m.home.appendChild(m.stage); });
+    theater.classList.remove('on'); pi.style.width='0';
+  }
+  document.getElementById('playall').onclick=playAll;
+  document.getElementById('closeT').onclick=closeTheater;
+  document.getElementById('skip').onclick=()=>{ clearTimeout(timer); cancelAnimationFrame(rafp);
+    const m=mounted[seq]; if(m&&m.stage.parentNode===stagebig)m.home.appendChild(m.stage); seq++; runSeq(); };
+  addEventListener('keydown',e=>{ if(e.key==='Escape')closeTheater(); });
+  </script>
+</body>
+</html>

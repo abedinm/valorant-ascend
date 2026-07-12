@@ -4,7 +4,8 @@ VALORANT ASCEND — deployable backend (Python stdlib only, no pip installs)
 Serves the static app and adds:
   - Optional passphrase gate (APP_PASSPHRASE env). No env var = open (local dev).
   - Signed, stateless session cookie (HMAC, 7 days). Survives restarts.
-  - /api/state GET/PUT  — server-side progress sync (JSON file, atomic writes).
+  - /api/state GET/PUT  — server-side progress sync (SQLite, WAL; legacy
+                          data/state.json is imported once, then kept as backup).
   - /api/henrik/*       — proxy to the HenrikDev API with the key held
                           server-side (HDEV_API_KEY env). Key never reaches
                           the browser. Whitelisted paths only.
@@ -27,6 +28,7 @@ import hmac
 import json
 import os
 import re
+import sqlite3
 import sys
 import time
 import urllib.request
@@ -36,7 +38,8 @@ from http import cookies
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.environ.get("DATA_DIR", os.path.join(BASE_DIR, "data"))
-STATE_FILE = os.path.join(DATA_DIR, "state.json")
+STATE_FILE = os.path.join(DATA_DIR, "state.json")   # legacy JSON store (migrated to SQLite)
+DB_FILE = os.path.join(DATA_DIR, "ascend.db")
 PORT = int(os.environ.get("PORT", "8150"))
 
 PASSPHRASE = os.environ.get("APP_PASSPHRASE", "")
@@ -93,6 +96,65 @@ def atomic_write(path, text):
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(text)
     os.replace(tmp, path)
+
+
+# ---- SQLite state store ----
+# One connection per request (ThreadingHTTPServer => concurrent handlers).
+# Schema creation and the legacy-JSON import are both idempotent.
+def db_conn():
+    os.makedirs(DATA_DIR, exist_ok=True)
+    conn = sqlite3.connect(DB_FILE, timeout=5)
+    conn.execute("PRAGMA journal_mode=WAL")
+    return conn
+
+
+def init_db():
+    with db_conn() as conn:
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS state ("
+            " id INTEGER PRIMARY KEY CHECK (id = 1),"
+            " payload TEXT NOT NULL,"
+            " updated_at TEXT NOT NULL)"
+        )
+        # one-time import of the legacy JSON file (kept on disk as a backup)
+        row = conn.execute("SELECT 1 FROM state WHERE id = 1").fetchone()
+        if row is None and os.path.exists(STATE_FILE):
+            try:
+                with open(STATE_FILE, "r", encoding="utf-8") as f:
+                    legacy = json.load(f)
+                if isinstance(legacy, dict) and legacy:
+                    conn.execute(
+                        "INSERT INTO state (id, payload, updated_at) VALUES (1, ?, ?)",
+                        (json.dumps(legacy), utc_now()),
+                    )
+            except Exception:
+                pass  # unreadable legacy file: start empty rather than crash
+
+
+def utc_now():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def state_read():
+    with db_conn() as conn:
+        row = conn.execute("SELECT payload FROM state WHERE id = 1").fetchone()
+    if not row:
+        return {}
+    try:
+        data = json.loads(row[0])
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def state_write(data):
+    with db_conn() as conn:
+        conn.execute(
+            "INSERT INTO state (id, payload, updated_at) VALUES (1, ?, ?)"
+            " ON CONFLICT(id) DO UPDATE SET payload = excluded.payload,"
+            " updated_at = excluded.updated_at",
+            (json.dumps(data), utc_now()),
+        )
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -204,7 +266,7 @@ class Handler(SimpleHTTPRequestHandler):
         if AUTH_ENABLED and not self.authed():
             return self.serve_login_page()
         # never serve server internals as static files
-        if path.startswith("/data/") or path.endswith(".py"):
+        if path.startswith("/data/") or path.endswith((".py", ".db")):
             return self.send_json(404, {"error": "not found"})
         # always revalidate app code so deploys take effect immediately
         self._static_nocache = path.endswith((".js", ".css", ".html")) or path == "/"
@@ -250,9 +312,8 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.authed():
             return self.send_json(401, {"error": "unauthorized"})
         try:
-            with open(STATE_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except (OSError, ValueError):
+            data = state_read()
+        except sqlite3.Error:
             data = {}
         self.send_json(200, data)
 
@@ -268,7 +329,10 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError
         except ValueError:
             return self.send_json(400, {"error": "invalid JSON"})
-        atomic_write(STATE_FILE, json.dumps(data))
+        try:
+            state_write(data)
+        except sqlite3.Error:
+            return self.send_json(500, {"error": "storage error"})
         self.send_json(200, {"ok": True})
 
     def handle_henrik(self):
@@ -313,8 +377,9 @@ class Handler(SimpleHTTPRequestHandler):
 
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
+    init_db()
     srv = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
-    print(f"VALORANT ASCEND on :{PORT} | auth={'ON' if AUTH_ENABLED else 'off'} | proxy={'ON' if HDEV_KEY else 'off'}")
+    print(f"VALORANT ASCEND on :{PORT} | auth={'ON' if AUTH_ENABLED else 'off'} | proxy={'ON' if HDEV_KEY else 'off'} | db=sqlite")
     srv.serve_forever()
 
 

@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  const VIEWS = ["dashboard", "modules", "daily", "roadmap", "intel", "schedule"];
+  const VIEWS = ["dashboard", "modules", "daily", "agents", "roadmap", "intel", "schedule"];
   let pathwayMounted = false;
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
@@ -39,7 +39,7 @@
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       const t = e.target;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
-      const map = { "1": "dashboard", "2": "modules", "3": "daily", "4": "roadmap", "5": "intel", "6": "schedule" };
+      const map = { "1": "dashboard", "2": "modules", "3": "daily", "4": "agents", "5": "roadmap", "6": "intel", "7": "schedule" };
       if (map[e.key]) { switchView(map[e.key], true); return; }
       if (e.key === "t" || e.key === "T") openTilt();
       if (e.key === "r" || e.key === "R") intelRefresh(true);
@@ -70,6 +70,7 @@
     renderDashboard();
     renderModules();
     renderDaily();
+    if (window.VAFIT) VAFIT.render();
     renderRoadmap();
     renderIntel();
     renderSchedule();
