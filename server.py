@@ -195,7 +195,7 @@ class Handler(SimpleHTTPRequestHandler):
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; "
             "font-src https://fonts.gstatic.com https://cdn.jsdelivr.net; "
             "img-src 'self' data: https:; "
-            "connect-src 'self' https://api.henrikdev.xyz; "
+            "connect-src 'self' https://api.henrikdev.xyz https://valorant-api.com; "
             "frame-ancestors 'none'"
         )
 

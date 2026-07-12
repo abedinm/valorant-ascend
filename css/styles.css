@@ -1341,3 +1341,70 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
   display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
 .mech-law p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
 .mech-law b { color: var(--text); }
+
+/* ==========================================================================
+   Profile Hero (profile.js) — Valorant identity card
+   ========================================================================== */
+.vhero {
+  position: relative; margin-bottom: 18px; padding: 20px 22px;
+  border: 1px solid var(--line); border-left: 3px solid var(--red);
+  border-radius: 12px; overflow: hidden;
+  background-color: #0a1216; background-size: cover; background-position: center right;
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(210px,290px);
+  grid-template-areas: "id sides" "stats sides"; gap: 16px 24px;
+}
+.vhero-empty { display: block; background: var(--panel); border-left-color: var(--teal); }
+.vhero-empty-in { display: flex; gap: 13px; align-items: center; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+.vhero-empty-in .ti { font-size: 30px; color: var(--teal); flex: none; }
+.vhero-empty-in b { color: var(--text); }
+
+.vhero-id { grid-area: id; display: flex; align-items: center; gap: 15px; }
+.vh-avatar { width: 62px; height: 62px; flex: none; border-radius: 10px; overflow: hidden;
+  border: 2px solid var(--red); box-shadow: 0 0 18px rgba(255,70,85,.3); background: #10181d;
+  display: flex; align-items: center; justify-content: center; }
+.vh-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.vh-avatar .ti { font-size: 30px; color: var(--text-mute); }
+.vh-name { font-family: "Oxanium", sans-serif; font-weight: 800; font-size: clamp(22px,3vw,30px);
+  letter-spacing: .04em; color: #ece8e1; line-height: 1; }
+.vh-tag { color: var(--text-mute); font-weight: 600; font-size: .62em; margin-left: 6px; }
+.vh-rankrow { display: flex; align-items: center; gap: 9px; margin-top: 9px; flex-wrap: wrap; }
+.vh-rankbadge { width: 30px; height: 30px; object-fit: contain; filter: drop-shadow(0 0 6px rgba(0,0,0,.5)); }
+.vh-rank { font-family: "Oxanium", sans-serif; font-weight: 700; font-size: 14px; color: var(--text); }
+.vh-rr, .vh-level { font: 700 11px "Oxanium", sans-serif; letter-spacing: .06em; padding: 3px 8px;
+  border-radius: 20px; background: rgba(255,255,255,.06); color: var(--text-dim); }
+.vh-rr { color: var(--teal); background: rgba(47,232,200,.1); }
+
+.vh-stats { grid-area: stats; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-self: end; }
+.vh-stat { background: rgba(6,10,13,.55); border: 1px solid var(--line); border-radius: 9px;
+  padding: 10px 12px; text-align: center; backdrop-filter: blur(3px); }
+.vh-stat-v { font-family: "Oxanium", sans-serif; font-weight: 800; font-size: clamp(20px,2.4vw,28px); color: var(--text); line-height: 1; }
+.vh-stat-v span { font-size: .5em; color: var(--text-mute); margin-left: 1px; }
+.vh-stat-l { font: 600 10px "Oxanium", sans-serif; letter-spacing: .16em; color: var(--text-mute); margin-top: 5px; }
+
+.vh-sides { grid-area: sides; display: flex; flex-direction: column; gap: 10px; }
+.vh-side { position: relative; overflow: hidden; border-radius: 10px; min-height: 74px;
+  border: 1px solid var(--line); background: linear-gradient(120deg, var(--g1,#16212c), var(--g2,#0c141a)); }
+.vh-side-meta { position: relative; z-index: 2; padding: 11px 14px; }
+.vh-side-tag { font: 700 9px "Oxanium", sans-serif; letter-spacing: .2em; color: rgba(255,255,255,.7); }
+.vh-side-name { font: 800 17px "Oxanium", sans-serif; color: #fff; margin: 2px 0; line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.vh-side-sub { font-size: 11px; color: rgba(255,255,255,.82); }
+.vh-agent-art { position: absolute; right: -6px; bottom: -18px; height: 150%; z-index: 1;
+  object-fit: contain; opacity: .92; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 55%); mask-image: linear-gradient(90deg, transparent, #000 55%); }
+.vh-weapon { display: flex; align-items: center; }
+.vh-weapon-art { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); height: 26px;
+  max-width: 46%; object-fit: contain; opacity: .95; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+.vh-weapon-fallback { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 26px; color: rgba(255,255,255,.5); }
+
+@media (max-width: 720px) {
+  .vhero { grid-template-columns: 1fr; grid-template-areas: "id" "stats" "sides"; }
+  .vh-stats { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* --- Agent Fit portraits + abilities --- */
+.fit-portrait { width: 56px; height: 56px; flex: none; border-radius: 9px; overflow: hidden;
+  background: linear-gradient(140deg, var(--g1,#16212c), var(--g2,#0c141a)); display: flex; align-items: flex-end; justify-content: center; }
+.fit-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.fit-abilities { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.fit-abilities img { width: 24px; height: 24px; padding: 3px; border-radius: 6px;
+  background: rgba(255,255,255,.06); border: 1px solid var(--line); object-fit: contain; }

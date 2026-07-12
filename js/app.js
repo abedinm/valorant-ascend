@@ -31,6 +31,11 @@
     renderAll();
     switchView(Store.getView(), false);
     setTimeout(autoRefresh, 800);
+    /* re-render the art-bearing views once official assets finish loading */
+    document.addEventListener("va-assets-ready", () => {
+      renderDashboard();
+      if (window.VAFIT) VAFIT.render();
+    });
   }
 
   /* ---------- keyboard shortcuts (skipped while typing) ---------- */
@@ -186,6 +191,7 @@
         </div>
       </header>
 
+      ${window.VAHERO ? VAHERO.html(a0) : ""}
       ${acctBanner()}
       ${!sensOk ? `<div class="alert">
         <i class="ti ti-settings-bolt"></i>

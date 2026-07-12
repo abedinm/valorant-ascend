@@ -5,7 +5,7 @@
    - Cross-origin (HenrikDev API, CDNs) and non-GET => never intercepted
    Bump CACHE on any deploy that changes the shell. */
 
-const CACHE = "va-shell-v10";
+const CACHE = "va-shell-v11";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
