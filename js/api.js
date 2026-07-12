@@ -127,6 +127,25 @@ const VAPI = (function () {
     }
   }
 
+  /* tally the player's own kills by weapon (real data + official killfeed icon
+     straight from the match payload — no fabrication, no external lookup) */
+  function weaponTally(m, puuid) {
+    const kills = Array.isArray(m.kills) ? m.kills : [];
+    const t = {};
+    kills.forEach((k) => {
+      if (k.killer_puuid !== puuid) return;
+      const name = k.damage_weapon_name ||
+        (k.finishing_damage && k.finishing_damage.damage_item) || null;
+      if (!name || name === "Bomb") return;
+      const icon = (k.damage_weapon_assets &&
+        (k.damage_weapon_assets.killfeed_icon || k.damage_weapon_assets.display_icon)) || null;
+      if (!t[name]) t[name] = { name: name, kills: 0, icon: icon };
+      t[name].kills++;
+      if (icon && !t[name].icon) t[name].icon = icon;
+    });
+    return Object.values(t);
+  }
+
   /* first kill of each round -> first blood (killer) / first death (victim) */
   function firstEngagements(m, puuid) {
     const kills = Array.isArray(m.kills) ? m.kills : [];
@@ -175,6 +194,7 @@ const VAPI = (function () {
       const shots = (me.stats.headshots || 0) + (me.stats.bodyshots || 0) + (me.stats.legshots || 0);
       const rounds = (m.metadata && m.metadata.rounds_played) || 1;
       const eng = firstEngagements(m, me.puuid);
+      const weapons = weaponTally(m, me.puuid);
       const board = all.map((p) => ({
         name: p.name, tag: p.tag,
         agent: p.character,
@@ -199,6 +219,7 @@ const VAPI = (function () {
         roundsWon: team ? team.rounds_won : null,
         roundsLost: team ? team.rounds_lost : null,
         myTeam: teamKey,
+        weapons: weapons,
         board: board
       };
     } catch (e) {

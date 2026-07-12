@@ -236,14 +236,24 @@
             ? `<button class="fit-lock" data-action="agent-lock" data-agent="${esc(a.name)}">
                  <i class="ti ti-lock"></i> LOCK ${esc(a.name.toUpperCase())}</button>`
             : (!lock ? `<button class="fit-lock ghost" data-action="agent-lock" data-agent="${esc(a.name)}">lock anyway</button>` : "");
+          const art = (window.VAASSETS && VAASSETS.agent(a.name)) || null;
+          const portrait = art
+            ? `<div class="fit-portrait"${art.grad && art.grad.length ? ` style="--g1:${esc(art.grad[0])};--g2:${esc(art.grad[art.grad.length-1])}"` : ""}>
+                 <img src="${esc(art.icon)}" alt="${esc(a.name)}" loading="lazy"></div>`
+            : `<div class="fit-tier t-${t.id}">${t.id}</div>`;
+          const abilities = art && art.abilities && art.abilities.length
+            ? `<div class="fit-abilities">${art.abilities.map((ab) =>
+                `<img src="${esc(ab.icon)}" title="${esc(ab.slot + ": " + ab.name)}" alt="${esc(ab.name)}" loading="lazy">`).join("")}</div>`
+            : "";
           return `
           <div class="fit-card tier-${t.id} ${lock && lock.agent === a.name ? "is-locked" : ""}">
             <div class="fit-rank">#${i + 1}</div>
-            <div class="fit-tier t-${t.id}">${t.id}</div>
+            ${portrait}
             <div class="fit-main">
               <div class="fit-name">${esc(a.name)} <span class="fit-role">${esc(a.role)}</span>
                 <span class="fit-score">${a.score}</span> ${evHtml}</div>
               <div class="fit-why">${esc(a.why)}</div>
+              ${abilities}
               ${a.tip !== "—" ? `<div class="fit-tip"><i class="ti ti-bulb"></i> ${esc(a.tip)}</div>` : ""}
             </div>
             ${lockBtn}
