@@ -1264,3 +1264,80 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
   .fit-rank { min-width: 24px; }
   .fit-lock { width: 100%; justify-content: center; }
 }
+
+/* ==========================================================================
+   Mechanics Lab (mechanics.js)
+   ========================================================================== */
+.mech-target {
+  display: flex; align-items: stretch; gap: 14px; margin-bottom: 14px;
+}
+.mech-target-now, .mech-target-next {
+  flex: 1; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 16px 18px; text-align: center;
+}
+.mech-target-next { border-color: rgba(47,232,200,.4); }
+.mech-target-arrow { display: flex; align-items: center; color: var(--text-mute); font-size: 22px; }
+.mt-label { font: 700 10px "Oxanium", sans-serif; letter-spacing: .18em; color: var(--text-mute); }
+.mt-val { font: 800 40px "Oxanium", sans-serif; line-height: 1.1; margin: 4px 0; }
+.mt-val.teal { color: var(--teal); }
+.mt-sub { font-size: 11.5px; color: var(--text-dim); }
+.mech-myth {
+  background: rgba(255,70,85,.07); border: 1px solid rgba(255,70,85,.28);
+  border-radius: 10px; padding: 11px 14px; font-size: 13px; color: var(--text-dim);
+  line-height: 1.55; margin-bottom: 18px;
+}
+.mech-myth b { color: var(--red); }
+.mech-myth .ti { color: var(--red); }
+
+.hs-ladder { display: flex; flex-direction: column; gap: 3px; margin-bottom: 22px; }
+.hs-band {
+  display: flex; align-items: center; gap: 12px; padding: 8px 14px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
+  font-family: "Chakra Petch", sans-serif;
+}
+.hs-band.here {
+  border-color: var(--teal); background: rgba(47,232,200,.08);
+  box-shadow: inset 0 0 0 1px var(--teal);
+}
+.hs-rank { flex: 1; font-weight: 600; font-size: 13px; }
+.hs-range { font-family: "Oxanium", sans-serif; font-weight: 700; font-size: 13px; color: var(--text-dim); }
+.hs-band.here .hs-range { color: var(--teal); }
+.hs-you { font: 800 11px "Oxanium", sans-serif; letter-spacing: .1em; color: var(--teal); }
+
+.mech-routine { margin-bottom: 20px; }
+.mr-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mr-head h2 { font: 800 16px "Oxanium", sans-serif; letter-spacing: .04em; display: flex; align-items: center; gap: 8px; }
+.mr-count { font: 800 14px "Oxanium", sans-serif; color: var(--text-mute); }
+.mr-count.full { color: var(--teal); }
+.mech-drill {
+  width: 100%; text-align: left; display: flex; gap: 12px; align-items: flex-start;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 11px;
+  padding: 13px 15px; margin-bottom: 9px; cursor: pointer; color: var(--text);
+}
+.mech-drill:hover { border-color: var(--line-2); }
+.mech-drill.done { border-color: rgba(47,232,200,.4); background: rgba(47,232,200,.05); }
+.md-check { font-size: 22px; color: var(--text-mute); flex: none; line-height: 1; padding-top: 1px; }
+.mech-drill.done .md-check { color: var(--teal); }
+.md-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.md-title { font: 700 14.5px "Oxanium", sans-serif; }
+.md-title em { font-style: normal; font-size: 11px; color: var(--text-mute); letter-spacing: .06em; }
+.md-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+.md-metric { font-size: 12px; color: var(--teal); display: flex; gap: 6px; align-items: baseline; margin-top: 2px; }
+
+.mech-sense {
+  background: var(--panel-2); border: 1px solid var(--line);
+  border-left: 3px solid var(--teal); border-radius: 11px; padding: 15px 17px; margin-bottom: 16px;
+}
+.ms-tag { font: 700 10px "Oxanium", sans-serif; letter-spacing: .2em; color: var(--teal); }
+.ms-title { font: 800 18px "Oxanium", sans-serif; margin: 6px 0 5px; }
+.ms-desc { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
+.ms-note { font-size: 11.5px; color: var(--text-mute); margin-top: 8px; font-style: italic; }
+
+.mech-law {
+  background: var(--panel); border: 1px solid var(--line-2); border-radius: 11px;
+  padding: 15px 17px;
+}
+.ml-tag { font: 700 11px "Oxanium", sans-serif; letter-spacing: .16em; color: var(--red);
+  display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.mech-law p { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+.mech-law b { color: var(--text); }
