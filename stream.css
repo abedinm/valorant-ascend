@@ -1,0 +1,90 @@
+:root{
+  --red:#ff4655; --teal:#2fe8c8; --gold:#ffd447;
+  --ink:#05080a; --ink2:#0b1014; --dim:#8aa0a4; --text:#eaf6f4;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;overflow:hidden;color:var(--text);
+  font-family:"Chakra Petch",system-ui,sans-serif}
+body{background:var(--ink)}
+body[data-screen="overlay"]{background:transparent}
+
+/* ---- shared backdrop ---- */
+.bg{position:fixed;inset:0;background:radial-gradient(130% 92% at 50% 10%,#12212b 0%,var(--ink2) 46%,var(--ink) 100%)}
+.grid{position:fixed;inset:-30%;
+  background-image:linear-gradient(rgba(47,232,200,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(47,232,200,.06) 1px,transparent 1px);
+  background-size:54px 54px;transform:perspective(720px) rotateX(58deg) translateY(9%);
+  mask-image:radial-gradient(72% 60% at 50% 40%,#000 40%,transparent 86%);animation:gd 13s linear infinite}
+@keyframes gd{to{background-position:0 54px,54px 0}}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(120% 92% at 50% 46%,transparent 54%,rgba(0,0,0,.62))}
+.scan{position:fixed;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);
+  box-shadow:0 0 22px 3px var(--red);animation:scan 7s ease-in-out infinite;opacity:.0}
+@keyframes scan{0%{top:8%;opacity:0}12%{opacity:.8}50%{top:92%;opacity:0}100%{opacity:0}}
+
+/* ---- centered scene ---- */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6vh 6vw}
+.brand{position:fixed;top:5vh;left:0;right:0;text-align:center;font-family:"Oxanium";font-weight:800;
+  letter-spacing:.22em;font-size:clamp(15px,1.7vw,24px)}
+.brand .tri{color:var(--red);filter:drop-shadow(0 0 10px var(--red))}
+.brand em{color:var(--teal);font-style:normal}
+
+.kicker{font-family:"Oxanium";font-weight:700;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--teal);font-size:clamp(11px,1.4vw,18px);margin-bottom:2.2vh;opacity:.9}
+.headline{font-family:"Oxanium";font-weight:800;line-height:.92;letter-spacing:.04em;
+  font-size:clamp(46px,9vw,150px);
+  background:linear-gradient(100deg,#fff 0%,var(--teal) 46%,var(--red) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 40px rgba(255,70,85,.28));animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 30px rgba(47,232,200,.22))}50%{filter:drop-shadow(0 0 52px rgba(255,70,85,.42))}}
+.headline.calm{animation:none;filter:drop-shadow(0 0 34px rgba(47,232,200,.3))}
+
+.rotator{height:4.4vh;margin-top:2.4vh;font-weight:600;letter-spacing:.14em;
+  font-size:clamp(14px,2.1vw,26px);color:#cfe;text-transform:uppercase}
+.rotator span{display:inline-block;animation:swap .5s ease}
+@keyframes swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.countdown{font-family:"Oxanium";font-weight:800;letter-spacing:.08em;
+  font-size:clamp(30px,5vw,76px);margin-top:2.6vh;color:var(--text);text-shadow:0 0 26px rgba(47,232,200,.4)}
+.countdown small{display:block;font-family:"Chakra Petch";font-weight:600;letter-spacing:.4em;
+  font-size:clamp(10px,1.3vw,15px);color:var(--dim);margin-top:1vh}
+
+.cta{margin-top:3.4vh;display:inline-flex;align-items:center;gap:12px;font-family:"Oxanium";font-weight:800;
+  letter-spacing:.1em;color:#05080a;background:var(--red);padding:14px 30px;border-radius:40px;
+  font-size:clamp(15px,2vw,24px);box-shadow:0 0 0 0 rgba(255,70,85,.5);animation:cta 1.7s infinite}
+@keyframes cta{0%{box-shadow:0 0 0 0 rgba(255,70,85,.5)}70%{box-shadow:0 0 0 22px rgba(255,70,85,0)}100%{box-shadow:0 0 0 0 rgba(255,70,85,0)}}
+
+.socials{position:fixed;bottom:5vh;left:0;right:0;display:flex;gap:min(4vw,54px);
+  align-items:center;justify-content:center;flex-wrap:wrap;
+  font-family:"Oxanium";font-weight:700;letter-spacing:.14em;font-size:clamp(12px,1.4vw,19px);color:var(--dim)}
+.socials b{color:var(--teal);margin-right:8px}
+
+/* ---- LIVE pill ---- */
+.livepill{display:inline-flex;align-items:center;gap:9px;font-family:"Oxanium";font-weight:800;letter-spacing:.2em;
+  font-size:clamp(11px,1.3vw,16px);color:#fff;background:rgba(255,70,85,.14);border:1px solid var(--red);
+  padding:7px 14px;border-radius:30px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ===================== TRANSPARENT IN-GAME OVERLAY ===================== */
+.ov-brand{position:fixed;top:26px;left:28px;display:flex;align-items:center;gap:11px;
+  font-family:"Oxanium";font-weight:800;letter-spacing:.16em;font-size:22px;
+  background:rgba(5,8,10,.55);backdrop-filter:blur(6px);border:1px solid rgba(47,232,200,.25);
+  padding:10px 16px;border-radius:12px;text-shadow:0 1px 6px #000}
+.ov-brand .tri{color:var(--red);filter:drop-shadow(0 0 8px var(--red))}
+.ov-brand em{color:var(--teal);font-style:normal}
+
+.ov-live{position:fixed;bottom:26px;left:28px;display:flex;align-items:center;gap:12px;
+  background:rgba(5,8,10,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,70,85,.3);
+  padding:10px 16px;border-radius:12px;text-shadow:0 1px 6px #000}
+.ov-live .txt{font-family:"Oxanium";font-weight:700;letter-spacing:.1em;font-size:15px;color:#eaf6f4}
+.ov-live .txt small{display:block;color:var(--teal);letter-spacing:.16em;font-size:11px;font-weight:600}
+
+.ov-social{position:fixed;bottom:26px;right:28px;min-width:230px;text-align:right;
+  background:rgba(5,8,10,.55);backdrop-filter:blur(6px);border:1px solid rgba(47,232,200,.22);
+  padding:11px 18px;border-radius:12px;font-family:"Oxanium";font-weight:700;letter-spacing:.1em;
+  font-size:16px;color:#eaf6f4;text-shadow:0 1px 6px #000;overflow:hidden}
+.ov-social b{color:var(--teal);margin-right:9px}
+.ov-social .row{display:inline-block;animation:swap .5s ease}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
