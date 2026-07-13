@@ -1408,3 +1408,48 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
 .fit-abilities { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .fit-abilities img { width: 24px; height: 24px; padding: 3px; border-radius: 6px;
   background: rgba(255,255,255,.06); border: 1px solid var(--line); object-fit: contain; }
+
+/* ==========================================================================
+   Combat Stats (combat.js)
+   ========================================================================== */
+.combat-empty { display: flex; gap: 13px; align-items: center; background: var(--panel);
+  border: 1px solid var(--line); border-left: 3px solid var(--teal); border-radius: 11px;
+  padding: 16px 18px; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+.combat-empty .ti { font-size: 30px; color: var(--teal); flex: none; }
+.combat-h { font: 800 15px "Oxanium", sans-serif; letter-spacing: .05em; margin: 22px 0 12px;
+  display: flex; align-items: center; gap: 8px; color: var(--text); }
+.combat-h .ti { color: var(--red); }
+
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.map-card { position: relative; height: 108px; border-radius: 11px; overflow: hidden;
+  border: 1px solid var(--line); background-color: #0c141a; background-size: cover; background-position: center;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 12px 14px; }
+.map-card.win { border-color: rgba(47,232,200,.4); }
+.map-card.loss { border-color: rgba(255,70,85,.4); }
+.map-top { display: flex; align-items: baseline; justify-content: space-between; }
+.map-name { font: 800 17px "Oxanium", sans-serif; letter-spacing: .04em; color: #ece8e1; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+.map-wr { font: 800 22px "Oxanium", sans-serif; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+.map-card.win .map-wr { color: var(--teal); }
+.map-card.loss .map-wr { color: var(--red-2); }
+.map-bot { display: flex; align-items: center; justify-content: space-between;
+  font: 600 12px "Chakra Petch", sans-serif; color: rgba(255,255,255,.9); text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+.map-kd { font-family: "Oxanium", sans-serif; font-weight: 700; }
+.combat-insight { margin-top: 14px; background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 15px; font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
+.combat-insight .ti { color: var(--gold, #ffd447); }
+.combat-insight b { color: var(--text); }
+
+.wep-list { display: flex; flex-direction: column; gap: 8px; }
+.wep-row { display: flex; align-items: center; gap: 13px; background: var(--panel);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 15px; }
+.wep-icon { width: 62px; flex: none; display: flex; align-items: center; justify-content: center; }
+.wep-icon img { max-width: 100%; max-height: 24px; object-fit: contain; filter: brightness(1.6) drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
+.wep-icon .ti { font-size: 20px; color: var(--text-mute); }
+.wep-main { flex: 1; min-width: 0; }
+.wep-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.wep-name { font: 700 14px "Oxanium", sans-serif; letter-spacing: .03em; }
+.wep-kills { font: 800 15px "Oxanium", sans-serif; color: var(--teal); }
+.wep-bar { height: 6px; background: rgba(255,255,255,.07); border-radius: 4px; overflow: hidden; }
+.wep-bar span { display: block; height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--red)); }
+.combat-foot { margin-top: 16px; font-size: 12px; color: var(--text-mute); line-height: 1.6; }
