@@ -31,11 +31,31 @@
     renderAll();
     switchView(Store.getView(), false);
     setTimeout(autoRefresh, 800);
+    /* log today's snapshot from whatever is already cached (day-1 trend point) */
+    try { const c0 = Store.getApiCache(); if (c0 && window.VATREND) VATREND.snapshot(c0); } catch (e) {}
     /* re-render the art-bearing views once official assets finish loading */
     document.addEventListener("va-assets-ready", () => {
       renderDashboard();
       if (window.VAFIT) VAFIT.render();
     });
+    /* keep it LIVE: re-pull on tab focus and on a gentle interval while visible */
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") autoRefreshLive();
+    });
+    setInterval(() => { if (document.visibilityState === "visible") autoRefreshLive(); }, 90 * 1000);
+  }
+
+  /* live refresh: re-pull if cache older than ~2 min, throttled so we never
+     hammer the community API (it only updates post-match anyway) */
+  let lastLive = 0;
+  function autoRefreshLive() {
+    const cfg = Store.getApiConfig();
+    if (!cfg) return;
+    const now = Date.now();
+    if (now - lastLive < 60 * 1000) return;
+    const cache = Store.getApiCache();
+    const age = cache ? now - new Date(cache.at).getTime() : Infinity;
+    if (age > 2 * 60 * 1000) { lastLive = now; intelRefresh(true); }
   }
 
   /* ---------- keyboard shortcuts (skipped while typing) ---------- */
@@ -193,6 +213,7 @@
       </header>
 
       ${window.VAHERO ? VAHERO.html(a0) : ""}
+      ${window.VATREND ? VATREND.card(a0) : ""}
       ${acctBanner()}
       ${!sensOk ? `<div class="alert">
         <i class="ti ti-settings-bolt"></i>
@@ -958,6 +979,7 @@
     </div>`;
     try {
       const cache = await VAPI.fetchAll(cfg);
+      if (window.VATREND) VATREND.snapshot(cache);
       if (status) status.innerHTML = "";
       const body = $("#intel-body");
       if (body) body.innerHTML = intelCockpit(cache);
