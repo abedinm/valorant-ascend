@@ -4,19 +4,22 @@
    ========================================================================== */
 
 :root {
-  --bg:        #0b1014;
-  --bg-2:      #0f1620;
-  --panel:     #121b24;
-  --panel-2:   #16212c;
-  --line:      #25323d;
-  --line-2:    #314250;
-  --text:      #e7eef3;
-  --text-dim:  #93a4b1;
-  --text-mute: #7e909d;
+  /* Valorant palette: navy-black backdrop, cream text, red hero accent.
+     Not "dark reddish" — the game's actual UI is #0f1923 + #ece8e1 + #ff4655. */
+  --bg:        #0f1923;   /* Valorant navy-black */
+  --bg-2:      #111f2b;
+  --panel:     #14212e;
+  --panel-2:   #182734;
+  --line:      #22384a;
+  --line-2:    #2f4658;
+  --text:      #ece8e1;   /* Valorant cream */
+  --text-dim:  #9db2bf;
+  --text-mute: #6f889a;
+  --tan:       #ece8e1;
 
   --red:    #ff4655;   /* Valorant red */
   --red-2:  #ff6b78;
-  --teal:   #2fe8c8;   /* signature teal */
+  --teal:   #2fe8c8;   /* signature accent (success/positive) */
   --teal-2: #18c9ad;
   --amber:  #ffc24b;
   --pink:   #ff70a6;
@@ -101,7 +104,7 @@ a:hover { text-decoration: underline; }
   justify-content: space-between;
   gap: 1rem;
   padding: .65rem clamp(.8rem, 3vw, 2rem);
-  background: rgba(11,16,20,.85);
+  background: rgba(15,25,35,.85);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -962,7 +965,7 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
 #game-overlay.show { opacity: 1; }
 .go-card {
   display: flex; flex-direction: column; align-items: center; gap: .4rem;
-  background: rgba(11,16,20,.92); border: 1px solid var(--teal);
+  background: rgba(15,25,35,.92); border: 1px solid var(--teal);
   border-radius: var(--radius); padding: 1.6rem 3rem;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
   animation: goPop .5s cubic-bezier(.2,1.4,.3,1);
@@ -1453,3 +1456,46 @@ button.im-row { width: 100%; cursor: pointer; text-align: left; font-family: var
 .wep-bar span { display: block; height: 100%; border-radius: 4px;
   background: linear-gradient(90deg, var(--teal), var(--red)); }
 .combat-foot { margin-top: 16px; font-size: 12px; color: var(--text-mute); line-height: 1.6; }
+
+/* ==========================================================================
+   Trends / Climb card (trends.js)
+   ========================================================================== */
+.climb-card { margin-bottom: 18px; }
+.climb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+.climb-net { font: 800 16px "Oxanium", sans-serif; }
+.climb-net.up { color: var(--teal); }
+.climb-net.down { color: var(--red); }
+.climb-net span { font-size: 11px; font-weight: 600; color: var(--text-mute); letter-spacing: .04em; margin-left: 4px; }
+.climb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tr-block { background: rgba(6,10,13,.4); border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; }
+.tr-block.tr-wide { grid-column: 1 / -1; }
+.tr-title { font: 700 10px "Oxanium", sans-serif; letter-spacing: .16em; color: var(--text-mute); margin-bottom: 8px; }
+.tr-title span { color: var(--text-dim); font-weight: 500; letter-spacing: .04em; }
+.tr-svg { width: 100%; height: 82px; display: block; }
+.tr-empty { height: 60px; display: flex; align-items: center; justify-content: center; text-align: center;
+  color: var(--text-mute); font-size: 12px; line-height: 1.4; padding: 0 8px; }
+@media (max-width: 560px) { .climb-grid { grid-template-columns: 1fr; } }
+
+/* ==========================================================================
+   Valorant re-theme polish — cream display type + red angular accents
+   ========================================================================== */
+.page-title, .vh-name, .map-name, .brand-text,
+.card-h, .combat-h, .view-head h1, .mr-head h2, .climb-head .card-h { color: var(--tan); }
+.brand-text strong { color: var(--red); }
+
+/* sharp red index tick on every view heading — the Valorant corner motif */
+.view-head h1 { position: relative; padding-left: 15px; }
+.view-head h1::before {
+  content: ""; position: absolute; left: 0; top: 14%; bottom: 14%; width: 4px;
+  background: var(--red); box-shadow: 0 0 10px rgba(255,70,85,.5);
+}
+/* tighter, more tactical display tracking */
+.page-title, .view-head h1 { letter-spacing: .01em; }
+
+/* cut-corner accent on primary cards (subtle, Valorant angular language) */
+.vhero, .climb-card, .rank-strip {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+/* buttons: sharper, more decisive */
+.btn { letter-spacing: .04em; }
